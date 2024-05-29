@@ -22,6 +22,7 @@ public class PlayerInput : MonoBehaviour
     readonly string reloadButtonName = "Reload"; // 재장전을 위한 입력 버튼 이름
 
     KeyCode keyCode_dash = KeyCode.Space;
+    KeyCode keyCode_jump = KeyCode.G;
 
     KeyCode keyCode_weapon_main = KeyCode.Alpha1;
     KeyCode keyCode_weapon_secondary = KeyCode.Alpha2;
@@ -34,7 +35,8 @@ public class PlayerInput : MonoBehaviour
     public bool mainAttack { get; private set; } // 감지된 발사 입력값
     public bool secondaryAttack { get; private set; } // 감지된 발사 입력값
     public bool reload { get; private set; } // 감지된 재장전 입력값
-    public bool dash { get; private set; }
+    public bool dash { get; private set; }      // 감지된 대쉬 
+    public bool jump { get; private set; }      // 감지된 점프 
 
     public bool weaponSelect_main { get; private set; }
     public bool weaponSelect_secondary { get; private set; }
@@ -71,6 +73,7 @@ public class PlayerInput : MonoBehaviour
         reload = Input.GetButtonDown(reloadButtonName); // 장전
 
         dash = Input.GetKeyDown(keyCode_dash);      //회피
+        jump = Input.GetKeyDown(keyCode_jump);      //점프
         
         weaponSelect_main = Input.GetKeyDown(keyCode_weapon_main);              // 주무기
         weaponSelect_secondary = Input.GetKeyDown(keyCode_weapon_secondary);    // 보조무기

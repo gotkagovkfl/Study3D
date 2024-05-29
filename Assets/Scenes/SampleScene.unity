@@ -180,7 +180,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 186892017}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 9edbd433c133cc94c871aa693d5bc9ae, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -275,8 +275,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cbbfac938181bc4c9a523c2216fc052, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  rotateSpeed: 180
 --- !u!114 &186892025
 MonoBehaviour:
   m_ObjectHideFlags: 0

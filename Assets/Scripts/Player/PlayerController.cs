@@ -1,22 +1,40 @@
 using System.Collections;
-using System.Collections.Generic;
-using DG.Tweening;
 using UnityEngine;
 
 public class PlayerController: MonoBehaviour
 {
-    public float moveSpeed = 5f; // 앞뒤 움직임의 속도
-    public float rotateSpeed = 180f; // 좌우 회전 속도
-
-
     PlayerInput playerInput; // 플레이어 입력을 알려주는 컴포넌트
     PlayerWeapon playerWeapon;
     Rigidbody playerRb; // 플레이어 캐릭터의 리지드바디
+    CapsuleCollider playerCollider;
 
 
         // private Animator playerAnimator; // 플레이어 캐릭터의 애니메이터
-    
 
+    //-------------------------------
+    
+    // 이동
+    float moveSpeed = 5f; // 앞뒤 움직임의 속도
+    
+    // 회전
+    // float rotateSpeed = 180f; // 좌우 회전 속도
+
+    // 점프
+    float jumpSpeed = 12;       // 중력 2.5배로 설정해놨음. 
+    bool isAvailable_jump 
+    {
+        get
+        {
+            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, playerCollider.height * 0.5f + 0.1f))
+            {
+                return true;
+            }
+            return false;
+        }
+    }
+
+
+    // 대시
     bool isDashing; 
     float duration_dash = 0.2f;
     float dashSpeed = 3f;
@@ -35,6 +53,7 @@ public class PlayerController: MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         playerWeapon = GetComponent<PlayerWeapon>();
         playerRb = GetComponent<Rigidbody>();
+        playerCollider = GetComponent<CapsuleCollider>();
         // playerAnimator = GetComponent<Animator>();
     }
 
@@ -43,6 +62,11 @@ public class PlayerController: MonoBehaviour
     {
         Rotate();
         Move();
+
+        if (playerInput.jump && isAvailable_jump)
+        {
+            Jump();
+        }
  
         if (playerInput.dash && isAvailable_dash)
         {
@@ -74,6 +98,21 @@ public class PlayerController: MonoBehaviour
         }
     }
 
+
+    // void OnCollisionEnter(Collision collision)
+    // {
+        
+    //     // 바닥인 경우
+    //     // if (collision.gameObject.CompareTag("Platform"))
+    //     // {
+    //         if (collision.contacts[0].normal.y > 0f)
+    //         {
+    //             jumpCount = 0;
+    //         }
+    //     // }
+    // }
+
+
     //===================================================================================================================================
 
     /// 입력값을 보고 해당 방향으로 이동. - velocity 안쓰면 벽뚫음.
@@ -84,9 +123,8 @@ public class PlayerController: MonoBehaviour
             return;
         
         //        
-        playerRb.velocity = Vector3.zero;
-        Vector3 moveDistance = playerInput.moveVector* moveSpeed ;
-        playerRb.velocity = moveDistance;
+        Vector3 moveDistance =    playerInput.moveVector * moveSpeed ;
+        playerRb.velocity = new Vector3(0,playerRb.velocity.y, 0) + moveDistance; // 낙하 등 중력은 보존함. 
     }
 
      /// 마우스 커서 방향으로 회전 
@@ -103,6 +141,15 @@ public class PlayerController: MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(direction);
         playerRb.rotation = targetRotation;
     }
+
+    /// 점프
+    void Jump()
+    {
+        // jumpCount++;
+        playerRb.velocity += Vector3.up * jumpSpeed;
+    }
+
+
 
     /// 대시 - 방향은 move로 인해 결정됨. 
     IEnumerator Dash()

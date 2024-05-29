@@ -55,17 +55,16 @@ public class PlayerWeapon : MonoBehaviour
     {
         holdingWeapons = new()
         {
-             {WeaponCategory.Main, null },
-             {WeaponCategory.Secondary, null },
-             {WeaponCategory.Melee, null },
-             {WeaponCategory.Support, null },
+            {WeaponCategory.Main, null },
+            {WeaponCategory.Secondary, null },
+            {WeaponCategory.Melee, null },
+            {WeaponCategory.Support, null },
         };
 
         HoldWeapon( WeaponCategory.Main, weapon_main_test );
         HoldWeapon( WeaponCategory.Secondary, weapon_secondary_test );
         HoldWeapon( WeaponCategory.Melee, weapon_melee_test );
         HoldWeapon( WeaponCategory.Support, weapon_support_test );
-        
     }
 
 
