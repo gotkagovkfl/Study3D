@@ -9,13 +9,17 @@ public class PlayerController: MonoBehaviour
     public float rotateSpeed = 180f; // 좌우 회전 속도
 
 
-    private PlayerInput playerInput; // 플레이어 입력을 알려주는 컴포넌트
-    private Rigidbody playerRb; // 플레이어 캐릭터의 리지드바디
+    PlayerInput playerInput; // 플레이어 입력을 알려주는 컴포넌트
+    PlayerWeapon playerWeapon;
+    Rigidbody playerRb; // 플레이어 캐릭터의 리지드바디
 
 
         // private Animator playerAnimator; // 플레이어 캐릭터의 애니메이터
     
-    float dashSpeed = 10f;
+
+    bool isDashing; 
+    float duration_dash = 0.2f;
+    float dashSpeed = 3f;
 
     float lastUseTime_dash = -500;
     float cooltime_dash = 1f; 
@@ -29,74 +33,65 @@ public class PlayerController: MonoBehaviour
     {
         // 사용할 컴포넌트들의 참조를 가져오기
         playerInput = GetComponent<PlayerInput>();
+        playerWeapon = GetComponent<PlayerWeapon>();
         playerRb = GetComponent<Rigidbody>();
         // playerAnimator = GetComponent<Animator>();
     }
 
-    // FixedUpdate는 물리 갱신 주기에 맞춰 실행됨
-    private void FixedUpdate() 
+    /// LateUpdate : Fixed에 하니 입력이 씹힘. 
+    void LateUpdate()
     {
-
         Rotate();
         Move();
-
+ 
         if (playerInput.dash && isAvailable_dash)
         {
             lastUseTime_dash = Time.time;
-            Dash();
+            StartCoroutine(Dash());
         }
 
-            
-
-        // playerAnimator.SetFloat("Move",playerInput.move);
+        
+        //
+        if (playerInput.weaponSelect_main)
+        {
+            Debug.Log("주 무기 장착");
+            SelectWeapon(WeaponCategory.Main);
+        }
+        else if (playerInput.weaponSelect_secondary)
+        {
+            Debug.Log("보조 무기 장착");
+            SelectWeapon(WeaponCategory.Secondary);
+        }
+        else if (playerInput.weaponSelect_melee)
+        {
+            Debug.Log("근접 무기 장착");
+            SelectWeapon(WeaponCategory.Melee);
+        }
+        else if (playerInput.weaponSelect_support)
+        {
+            Debug.Log("지원 무기 장착");
+            SelectWeapon(WeaponCategory.Support);
+        }
     }
 
     //===================================================================================================================================
 
-    // 입력값에 따라 캐릭터를 앞뒤로 움직임
+    /// 입력값을 보고 해당 방향으로 이동. - velocity 안쓰면 벽뚫음.
     private void Move() 
     {
-        // 이동 거리 계산 - 키입력이 없으면 0
-        // Vector3 moveDistance = playerInput.moveVector* moveSpeed * Time.fixedDeltaTime;
+        // 대시 중에는 진행하지 않음 - velocity가 수정되기 떄문. 
+        if (isDashing)
+            return;
         
-        // 물리적용한 이동 
-        // playerRb.MovePosition(playerRb.position + moveDistance);
-
+        //        
+        playerRb.velocity = Vector3.zero;
         Vector3 moveDistance = playerInput.moveVector* moveSpeed ;
-        
-        // 물리적용한 이동 
         playerRb.velocity = moveDistance;
-
-        // Debug.Log(playerRb.velocity);
-        
     }
 
-    void OnCollisionEnter(Collision collision)
-    {
-        // playerRb.velocity = Vector3.zero;
-
-        
-    }
-
-
-
-    // 마우스 방향에 따라 캐릭터를 좌우로 회전
+     /// 마우스 커서 방향으로 회전 
     private void Rotate() 
     {
-        // Ray ray = Camera.main.ScreenPointToRay(playerInput.mouseScreenPos);
-        
-        // if(Physics.Raycast(ray,out RaycastHit hit))
-        // {
-        //     Vector3 mouseWorldPos = hit.point;       // 타겟을 레이캐스트가 충돌된 곳으로 옮긴다.
-        //     mouseWorldPos.y = transform.position.y;
-
-        //     Vector3  dir= mouseWorldPos - transform.position;
-
-        //     Quaternion q = Quaternion.LookRotation(dir);
-        //     playerRb.rotation  = q;
-        // }
-
-
         Vector3 mouseScreenPos = playerInput.mouseScreenPos;
         mouseScreenPos.z = Camera.main.WorldToScreenPoint(transform.position).z; // 카메라와의 거리 설정
 
@@ -109,13 +104,28 @@ public class PlayerController: MonoBehaviour
         playerRb.rotation = targetRotation;
     }
 
-    void Dash()
+    /// 대시 - 방향은 move로 인해 결정됨. 
+    IEnumerator Dash()
     {
         // 물리적용한 이동 
-        playerRb.velocity *= dashSpeed;
-        Debug.Log(playerRb.velocity);
+        isDashing = true;
 
+        Vector3 moveDistance = playerInput.moveVector.normalized* moveSpeed ;      // 여기서 재측정. 이속이 적게 측정됨. normalized 안하면 대시 거리가 달라짐.  
+        playerRb.velocity = moveDistance * dashSpeed;
+        Debug.Log($"{playerInput.moveVector} /      {moveDistance} /  {playerRb.velocity}" );
+
+        yield return new WaitForSeconds(duration_dash);
+
+        isDashing = false;
     }
+
+    /// 무기교체
+    void SelectWeapon(WeaponCategory category)
+    {
+        playerWeapon.UseWeapon(category);
+    }
+
+    
 
 
 
