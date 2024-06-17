@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerController: MonoBehaviour
 {
     PlayerInput playerInput; // 플레이어 입력을 알려주는 컴포넌트
+    PlayerEquipment playerEquipment;
     PlayerWeapon playerWeapon;
     Rigidbody playerRb; // 플레이어 캐릭터의 리지드바디
     CapsuleCollider playerCollider;
@@ -51,9 +52,11 @@ public class PlayerController: MonoBehaviour
     {
         // 사용할 컴포넌트들의 참조를 가져오기
         playerInput = GetComponent<PlayerInput>();
+        playerEquipment = GetComponent<PlayerEquipment>();
         playerWeapon = GetComponent<PlayerWeapon>();
         playerRb = GetComponent<Rigidbody>();
         playerCollider = GetComponent<CapsuleCollider>();
+        
         // playerAnimator = GetComponent<Animator>();
     }
 
@@ -169,7 +172,7 @@ public class PlayerController: MonoBehaviour
     /// 무기교체
     void SelectWeapon(WeaponCategory category)
     {
-        playerWeapon.UseWeapon(category);
+        playerWeapon.HoldWeapon(category);
     }
 
     
