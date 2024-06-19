@@ -18,7 +18,7 @@ public class PlayerWeapon : MonoBehaviour
     [SerializeField] Transform t_hand;           // 무기를 장착하는 손.
     
     WeaponCategory currWeaponCategory;
-    EquippedWeapon holdingWeapon;     // <= 타입을 Weapon 타입으로 변경할 예정
+    // EquippedWeapon holdingWeapon;     // <= 타입을 Weapon 타입으로 변경할 예정
 
     // Dictionary<WeaponCategory, EquippedWeapon> equippedWeapons = new();     // <= 나중에 Value 를 Weapon 타입으로 변경할 예정
 
@@ -64,8 +64,8 @@ public class PlayerWeapon : MonoBehaviour
 
 
     /// 무기 '소지' - 사용할때 바로 꺼낼 수 있도록 준비함.  < = 나중에 매개변수로 카테고리 삭제할거임. 매개변수에서 참조
-    void EquipWeapon(EquippedWeapon weapon)
-    {
+    // void EquipWeapon(EquippedWeapon weapon)
+    // {
         
         // Destroy( equippedWeapons[weaponCategory] );      //  <- 나중엔 파괴 여기서 말고.
         // GameObject newWeapon = Instantiate(weapon, t_hand);
@@ -83,7 +83,7 @@ public class PlayerWeapon : MonoBehaviour
         // {
         //     newWeapon.SetActive(false);        //안보이게 가리기 (수정해야함);
         // }
-    }
+    // }
 
     
     /// 보유중인 무기를 선택하여 사용 가능한 상태로 휴대한다. (swap)
@@ -100,11 +100,11 @@ public class PlayerWeapon : MonoBehaviour
         currWeaponCategory = category;
 
         // 이전무기 집어넣기
-        holdingWeapon?.UnEquip();       // <= 수정해야함.
+        // holdingWeapon?.UnEquip();       // <= 수정해야함.
 
         // 선택한 무기 꺼내기
         // holdingWeapon = equippedWeapons[currWeaponCategory];
-        holdingWeapon.Equip();        // <= 수정해야함.
+        // holdingWeapon.Equip();        // <= 수정해야함.
 
         //
     }

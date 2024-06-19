@@ -19,14 +19,17 @@ public enum EquipmentSlot
 // 플레이어의 장비 관리자
 public class PlayerEquipment : MonoBehaviour
 {
+    
+    
+    Dictionary<EquipmentSlot, Equipment> currEquipments;   // 현재 장착중인 장비 목록   
+
     Dictionary<EquipmentSlot, Transform> equipmentPositions;    // 장비 착용 위치  - 아직 이거까진 투머치 
-    
-    Dictionary<EquipmentSlot, Equipment> currEquipments;   // 현재 장착중인 장비 목록
+    public Dictionary<EquipmentSlot, GameObject> currEquipmentObjects; //현재 장착중인 장비의 게임 오브젝트 
 
     
 
 
-        ///for test 
+    ///for test
     [Header("Test")]
     
     // 이것들은 프리팹
@@ -43,52 +46,53 @@ public class PlayerEquipment : MonoBehaviour
     public void Init()
     {
         //  일단 현재 장착 장비 사전 초기화. 
-        
         equipmentPositions = new();
+        currEquipments = new();
+        currEquipmentObjects = new();
+        
         foreach (EquipmentSlot equipmentSlot in Enum.GetValues(typeof(EquipmentSlot)))
         {
             equipmentPositions.Add( equipmentSlot, null);
-        }
-
-
-
-
-        currEquipments = new();
-        foreach (EquipmentSlot equipmentSlot in Enum.GetValues(typeof(EquipmentSlot)))
-        {
             currEquipments.Add( equipmentSlot, null);
+            currEquipmentObjects.Add( equipmentSlot, null);
         }
 
         // 그리고 플레이어의 저장된 정보를 보고 해당 장비 장착
         InitTestWeapon();
-        
     }
     
 
     /// 테스트용으로 무기들을 초기화함. 
     void InitTestWeapon()
     {   
-        // currEquipments[EquipmentSlot.MainWeapon] = null;
-        // currEquipments[EquipmentSlot.SecondaryWeapon] = null;
-        // currEquipments[EquipmentSlot.MeleeWeapon] = null;
-        // currEquipments[EquipmentSlot.SupportWeapon] = null;
-        
+        Equip(EquipmentSlot.MainWeapon,     new Equipment_TestMainWeapon() );         // 테스트 주무기
+        Equip(EquipmentSlot.SecondaryWeapon,new Equipment_TestSecondaryWeapon());     // 테스트 보조무기
+        Equip(EquipmentSlot.MeleeWeapon,    new Equipment_TestMeleeWeapon());         // 테스트 근접무기
+        Equip(EquipmentSlot.SupportWeapon,  new Equipment_TestSupportWeapon());       // 테스트 지원무기
     }
+
 
 
     void Swap(Equipment equipment)
     {
         EquipmentSlot currEquipmentSlot= equipment.equipmentSlot;
-
         
         // 사용중이던 장비 장착해제
-        currEquipments[currEquipmentSlot]?.UnEquip();
+        UnEquip(currEquipmentSlot);
 
-        // 해당 장비 장착.
-        Transform t_equipmentPosition = equipmentPositions[currEquipmentSlot];
+        // 새 장비 장착
+        Equip(currEquipmentSlot, equipment);
+    }
 
-        currEquipments[currEquipmentSlot] = equipment;
-        currEquipments[currEquipmentSlot]?.Equip( t_equipmentPosition );
+
+    void Equip(EquipmentSlot equipmentSlot, Equipment equipment)
+    {
+        // 해당 장비 장착
+        currEquipments[equipmentSlot] = equipment;
+        currEquipments[equipmentSlot]?.Equip( );
+
+        // 실체 생성해야함. 
+        string id = equipment.id;
     }
 
 
@@ -97,6 +101,8 @@ public class PlayerEquipment : MonoBehaviour
         // 사용중이던 장비 장착해제
         currEquipments[equipmentSlot]?.UnEquip();
         currEquipments[equipmentSlot] = null;
+
+        // 만들어진 실체 없애기 
     }
 
 }
