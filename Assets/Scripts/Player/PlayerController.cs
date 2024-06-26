@@ -82,22 +82,22 @@ public class PlayerController: MonoBehaviour
         if (playerInput.weaponSelect_main)
         {
             Debug.Log("주 무기 장착");
-            SelectWeapon(WeaponCategory.Main);
+            SelectWeapon(EquipmentSlot.MainWeapon);
         }
         else if (playerInput.weaponSelect_secondary)
         {
             Debug.Log("보조 무기 장착");
-            SelectWeapon(WeaponCategory.Secondary);
+            SelectWeapon(EquipmentSlot.SecondaryWeapon);
         }
         else if (playerInput.weaponSelect_melee)
         {
             Debug.Log("근접 무기 장착");
-            SelectWeapon(WeaponCategory.Melee);
+            SelectWeapon(EquipmentSlot.MeleeWeapon);
         }
         else if (playerInput.weaponSelect_support)
         {
             Debug.Log("지원 무기 장착");
-            SelectWeapon(WeaponCategory.Support);
+            SelectWeapon(EquipmentSlot.SupportWeapon);
         }
     }
 
@@ -170,9 +170,9 @@ public class PlayerController: MonoBehaviour
     }
 
     /// 무기교체
-    void SelectWeapon(WeaponCategory category)
+    void SelectWeapon(EquipmentSlot equipmentSlot)
     {
-        playerWeapon.HoldWeapon(category);
+        playerWeapon.HoldWeapon(equipmentSlot);
     }
 
     

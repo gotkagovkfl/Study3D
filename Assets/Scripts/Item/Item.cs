@@ -67,25 +67,25 @@ public abstract class Equipment :Item, IUsable     // 나중에 아이템 상속
 /// equipment_weapon_main_
 public class Equipment_TestMainWeapon : Equipment
 {
-    public override string id => $"{(int)equipmentSlot}00000";
+    public override string id => $"{(int)type}{(int)equipmentSlot}";
     public override EquipmentSlot equipmentSlot => EquipmentSlot.MainWeapon;
 }
 
 
 public class Equipment_TestSecondaryWeapon : Equipment
 {
-    public override string id => $"{(int)equipmentSlot}00001";
+    public override string id => $"{(int)type}{(int)equipmentSlot}";
     public override EquipmentSlot equipmentSlot => EquipmentSlot.SecondaryWeapon;
 }
 
 public class Equipment_TestMeleeWeapon : Equipment
 {
-    public override string id => $"{(int)equipmentSlot}00002";
+    public override string id => $"{(int)type}{(int)equipmentSlot}";
     public override EquipmentSlot equipmentSlot => EquipmentSlot.MeleeWeapon;
 }
 
 public class Equipment_TestSupportWeapon : Equipment
 {
-    public override string id => $"{(int)equipmentSlot}00003";
+    public override string id => $"{(int)type}{(int)equipmentSlot}";
     public override EquipmentSlot equipmentSlot => EquipmentSlot.SupportWeapon;
 }

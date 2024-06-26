@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 3225588903168131550}
   - component: {fileID: 8866823346130611849}
   - component: {fileID: 7526304691613707100}
+  - component: {fileID: -8892297050680468759}
   m_Layer: 0
-  m_Name: Weapon_Support_Test
+  m_Name: 04_TestSupportWeapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,3 +84,15 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-8892297050680468759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789041584975410788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cb1938390c86bb4a91f86855d2d0427, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
