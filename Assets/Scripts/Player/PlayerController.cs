@@ -1,13 +1,16 @@
 using System.Collections;
+using System.Threading;
 using UnityEngine;
 
 public class PlayerController: MonoBehaviour
 {
-    PlayerInput playerInput; // 플레이어 입력을 알려주는 컴포넌트
+    Study3D.PlayerInput playerInput; // 플레이어 입력을 알려주는 컴포넌트 - PlayerInput 클래스가 여러개 있어서.
     PlayerEquipment playerEquipment;
     PlayerWeapon playerWeapon;
     Rigidbody playerRb; // 플레이어 캐릭터의 리지드바디
     CapsuleCollider playerCollider;
+
+    Animator playerAnimator;
 
 
         // private Animator playerAnimator; // 플레이어 캐릭터의 애니메이터
@@ -51,11 +54,13 @@ public class PlayerController: MonoBehaviour
     private void Start() 
     {
         // 사용할 컴포넌트들의 참조를 가져오기
-        playerInput = GetComponent<PlayerInput>();
+        playerInput = GetComponent<Study3D.PlayerInput>();
         playerEquipment = GetComponent<PlayerEquipment>();
         playerWeapon = GetComponent<PlayerWeapon>();
         playerRb = GetComponent<Rigidbody>();
         playerCollider = GetComponent<CapsuleCollider>();
+
+        playerAnimator = GetComponentInChildren<Animator>();
         
         // playerAnimator = GetComponent<Animator>();
     }
@@ -127,7 +132,13 @@ public class PlayerController: MonoBehaviour
         
         //        
         Vector3 moveDistance =    playerInput.moveVector * moveSpeed ;
+
         playerRb.velocity = new Vector3(0,playerRb.velocity.y, 0) + moveDistance; // 낙하 등 중력은 보존함. 
+
+        // 애니메이션 달리기 속도. 
+        float hm = moveDistance.sqrMagnitude;
+        hm = hm>0 ? 1f :0;
+        playerAnimator.SetFloat("MoveSpeed",hm);
     }
 
      /// 마우스 커서 방향으로 회전 
