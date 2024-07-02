@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
@@ -50,6 +51,36 @@ public class PlayerController: MonoBehaviour
 
     bool isAvailable_dash  => lastUseTime_dash + cooltime_dash  <= Time.time;
 
+    
+    // 애니메이션
+    List<Vector2> dirs = new()  // 8방향이 담겨있음. 위 방향을 기준으로 시계방향.
+    {
+        new Vector2(0,1),
+        new Vector2(1,1),
+        new Vector2(1,0),
+        new Vector2(1,-1),
+        new Vector2(0,-1),
+        new Vector2(-1,-1),
+        new Vector2(-1,0),
+        new Vector2(-1,1)
+    };
+
+    Dictionary<Vector2,int> dirIdxs = new() // 해당 이동방향이 dir 리스트에서 몇번 idx인지,
+    {
+        {new Vector2(0,1),0},
+        {new Vector2(1,1),1},
+        {new Vector2(1,0),2},
+        {new Vector2(1,-1),3},
+        {new Vector2(0,-1),4},
+        {new Vector2(-1,-1),5},
+        {new Vector2(-1,0),6},
+        {new Vector2(-1,1),7}
+    };
+
+    int idx_offset = 0;
+
+
+
 
     //=======================================================================================================
 
@@ -73,6 +104,7 @@ public class PlayerController: MonoBehaviour
         Rotate();
         Move();
         
+
         if (isAvailable_jump )
         {
             Debug.DrawRay(transform.position,  Vector3.down*playerCollider.height, Color.green,0,false);
@@ -83,22 +115,13 @@ public class PlayerController: MonoBehaviour
         }
     
         
-
-
-
-        if (playerInput.jump)
-        {
-            Debug.Log("[key] 잠뿌");
-        }
-
+        // 점프
         if (playerInput.jump && isAvailable_jump)
         {
-            
-            
             Jump();
             
         }
- 
+        // 대시
         if (playerInput.dash && isAvailable_dash)
         {
             lastUseTime_dash = Time.time;
@@ -106,7 +129,7 @@ public class PlayerController: MonoBehaviour
         }
 
         
-        //
+        // 무기변경
         if (playerInput.weaponSelect_main)
         {
             Debug.Log("[key] 주 무기 장착");
@@ -145,6 +168,76 @@ public class PlayerController: MonoBehaviour
 
 
     //===================================================================================================================================
+    // 이동 애니메이션 설정
+    void SetMoveAnimation(bool isMoving)
+    {
+        playerAnimator.SetBool("IsMoving",isMoving);    // idle <-> move
+        if (isMoving)
+        {
+            // 현재 바라보는 방향 계산 (8방향)
+            float rotY = playerRb.rotation.eulerAngles.y;
+            // Debug.Log($"[플레이어 rot] {rotY}");
+
+            if (22.5f <= rotY && rotY < 67.5f)
+            {
+                idx_offset = 1;
+            }
+            else if (67.5f <= rotY && rotY < 112.5f)
+            {
+                idx_offset = 2;
+            }
+            else if (112.5f <= rotY && rotY < 157.5f)
+            {
+                idx_offset = 3;
+            }
+            else if (157.5f<= rotY && rotY <202.5f)
+            {
+                idx_offset = 4;
+            }
+            else if (202.5f <= rotY && rotY < 247.5f)
+            {
+                idx_offset = 5;
+            }
+            else if (247.5f <=rotY && rotY <292.5f)
+            {
+                idx_offset = 6;
+            }
+            else if (292.5f <= rotY && rotY < 337.5f)
+            {
+                idx_offset = 7;
+            }
+            else 
+            {
+                idx_offset = 0;
+            }
+            // Debug.Log($"[회전방향 : ] {idx_offset}, {dirs[idx_offset]}"); 
+            
+            // 현재 이동방향 계산
+            Vector2 moveVector = Vector3.zero;
+
+            float moveH = playerInput.moveVector.x;
+            float moveV = playerInput.moveVector.z;
+            if (moveH !=0)
+            {
+                moveH = moveH>0?1:-1;
+                moveVector.x = moveH;
+            }
+            if (moveV !=0)
+            {
+                moveV = moveV>0?1:-1;
+                moveVector.y = moveV;
+            }
+
+            // 현재 바라보는 방향에서 현재 이동 방향으로 이동할 때 재생되어야 할 애니메이션 결정
+            Vector2 animationVector = dirs[ (dirIdxs[moveVector] - idx_offset+8)%8];
+
+            playerAnimator.SetFloat("MoveV",animationVector.x);
+            playerAnimator.SetFloat("MoveV",animationVector.y);
+        }
+        
+        
+    }
+
 
     /// 입력값을 보고 해당 방향으로 이동. - velocity 안쓰면 벽뚫음.
     private void Move() 
@@ -160,34 +253,7 @@ public class PlayerController: MonoBehaviour
 
         // 애니메이션 달리기 속도. 
         float hm = moveDistance.sqrMagnitude;
-        playerAnimator.SetBool("IsMoving",hm>0);
-
-
-        float moveH = playerInput.moveVector.x;
-        float moveV = playerInput.moveVector.z;
-
-        if (moveH ==0)
-        {
-            playerAnimator.SetFloat("MoveH",0);
-        }
-        else
-        {
-            moveH = moveH>0?1:-1;
-            playerAnimator.SetFloat("MoveH",moveH);
-        }
-
-        if (moveV == 0)
-        {
-            playerAnimator.SetFloat("MoveV",0);
-        }
-        else
-        {
-                moveV = moveV>0?1:-1;
-            playerAnimator.SetFloat("MoveV",moveV);
-        }
-
-
-        
+        SetMoveAnimation(hm>0);
     }
 
      /// 마우스 커서 방향으로 회전 
