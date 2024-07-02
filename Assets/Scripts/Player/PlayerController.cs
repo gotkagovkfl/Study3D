@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Threading;
 using UnityEngine;
@@ -29,7 +30,8 @@ public class PlayerController: MonoBehaviour
     {
         get
         {
-            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, playerCollider.height * 0.5f + 0.1f))
+            
+            if (Physics.Raycast(transform.position+ Vector3.up*0.1f, Vector3.down, out RaycastHit hit, playerCollider.height*0.5f))
             {
                 return true;
             }
@@ -70,10 +72,31 @@ public class PlayerController: MonoBehaviour
     {
         Rotate();
         Move();
+        
+        if (isAvailable_jump )
+        {
+            Debug.DrawRay(transform.position,  Vector3.down*playerCollider.height, Color.green,0,false);
+        }
+        else
+        {
+            Debug.DrawRay(transform.position,  Vector3.down*playerCollider.height, Color.red,0,false);
+        }
+    
+        
+
+
+
+        if (playerInput.jump)
+        {
+            Debug.Log("[key] 잠뿌");
+        }
 
         if (playerInput.jump && isAvailable_jump)
         {
+            
+            
             Jump();
+            
         }
  
         if (playerInput.dash && isAvailable_dash)
@@ -86,22 +109,22 @@ public class PlayerController: MonoBehaviour
         //
         if (playerInput.weaponSelect_main)
         {
-            Debug.Log("주 무기 장착");
+            Debug.Log("[key] 주 무기 장착");
             SelectWeapon(EquipmentSlot.MainWeapon);
         }
         else if (playerInput.weaponSelect_secondary)
         {
-            Debug.Log("보조 무기 장착");
+            Debug.Log("[key] 보조 무기 장착");
             SelectWeapon(EquipmentSlot.SecondaryWeapon);
         }
         else if (playerInput.weaponSelect_melee)
         {
-            Debug.Log("근접 무기 장착");
+            Debug.Log("[key]근접 무기 장착");
             SelectWeapon(EquipmentSlot.MeleeWeapon);
         }
         else if (playerInput.weaponSelect_support)
         {
-            Debug.Log("지원 무기 장착");
+            Debug.Log("[key] 지원 무기 장착");
             SelectWeapon(EquipmentSlot.SupportWeapon);
         }
     }
@@ -137,8 +160,34 @@ public class PlayerController: MonoBehaviour
 
         // 애니메이션 달리기 속도. 
         float hm = moveDistance.sqrMagnitude;
-        hm = hm>0 ? 1f :0;
-        playerAnimator.SetFloat("MoveSpeed",hm);
+        playerAnimator.SetBool("IsMoving",hm>0);
+
+
+        float moveH = playerInput.moveVector.x;
+        float moveV = playerInput.moveVector.z;
+
+        if (moveH ==0)
+        {
+            playerAnimator.SetFloat("MoveH",0);
+        }
+        else
+        {
+            moveH = moveH>0?1:-1;
+            playerAnimator.SetFloat("MoveH",moveH);
+        }
+
+        if (moveV == 0)
+        {
+            playerAnimator.SetFloat("MoveV",0);
+        }
+        else
+        {
+                moveV = moveV>0?1:-1;
+            playerAnimator.SetFloat("MoveV",moveV);
+        }
+
+
+        
     }
 
      /// 마우스 커서 방향으로 회전 
