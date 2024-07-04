@@ -5,9 +5,9 @@ using UnityEngine;
 
 
 
-
-
-public interface IUsable
+namespace  Study3D
+{
+    public interface IUsable
 {
     public void Use();      // 인벤토리에서 우클릭했을 때, 
 }
@@ -89,3 +89,5 @@ public class Equipment_TestSupportWeapon : Equipment
     public override string id => $"{(int)type}{(int)equipmentSlot}";
     public override EquipmentSlot equipmentSlot => EquipmentSlot.SupportWeapon;
 }
+}
+

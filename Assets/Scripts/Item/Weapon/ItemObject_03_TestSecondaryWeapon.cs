@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Study3D;
+
 public class ItemObject_03_TestSecondaryWeapon : Weapon
 {
     public override string itemId => $"{(int)ItemType.Equipment}{(int)EquipmentSlot.SecondaryWeapon}";

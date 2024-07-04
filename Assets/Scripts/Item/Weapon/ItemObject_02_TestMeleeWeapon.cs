@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Study3D;
 
 public class ItemObject_02_TestMeleeWeapon : Weapon
 {

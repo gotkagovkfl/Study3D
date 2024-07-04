@@ -6,16 +6,18 @@ using UnityEngine;
 
 
 
-// 플레이어의 장비 장착 칸
-public enum EquipmentSlot 
+namespace Study3D
 {
-    None = 0,
-    MainWeapon = 1,
-    SecondaryWeapon = 2,
-    MeleeWeapon = 3,
-    SupportWeapon = 4,
+    // 플레이어의 장비 장착 칸
+    public enum EquipmentSlot 
+    {
+        None = 0,
+        MainWeapon = 1,
+        SecondaryWeapon = 2,
+        MeleeWeapon = 3,
+        SupportWeapon = 4,
 
-}
+    }
 
 
 // 플레이어의 장비 관리자
@@ -149,5 +151,7 @@ public class PlayerEquipment : MonoBehaviour
         // 만들어진 실체 없애기 
         Destroy(currEquipmentObjects[equipmentSlot]);
     }
+
+}
 
 }

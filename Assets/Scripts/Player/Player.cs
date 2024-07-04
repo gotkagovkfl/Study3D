@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+namespace Study3D
 {
-    public static Player player{get;private set;}
-
-    void Awake()
+    public class Player : MonoBehaviour
     {
-        player = this;
-    }
+        public static Player player{get;private set;}
+
+        void Awake()
+        {
+            player = this;
+        }
 }
+}
+

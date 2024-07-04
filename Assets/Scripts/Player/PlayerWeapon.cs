@@ -11,8 +11,8 @@ using UnityEngine;
 //     Melee,
 //     Support
 // }
-
-
+namespace Study3D
+{
 public class PlayerWeapon : MonoBehaviour
 {
     PlayerEquipment playerEquipment;
@@ -80,5 +80,7 @@ public class PlayerWeapon : MonoBehaviour
 
         
 
+
+}
 
 }
