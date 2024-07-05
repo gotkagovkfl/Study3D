@@ -13,6 +13,7 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 		public bool aim;
+		public bool attack;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -49,6 +50,12 @@ namespace StarterAssets
 		{
 			AimInput(value.isPressed);
 		}
+
+
+		public void OnAttack(InputValue value)
+		{
+			AttackInput(value.isPressed);
+		}
 #endif
 
 
@@ -76,6 +83,11 @@ namespace StarterAssets
 		public void AimInput(bool newAimState)
 		{
 			aim = newAimState;
+		}
+
+		public void AttackInput(bool newAttackState)
+		{
+			attack = newAttackState;
 		}
 		
 		private void OnApplicationFocus(bool hasFocus)
