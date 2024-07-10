@@ -23,6 +23,8 @@ public class TPSController : MonoBehaviour
     [SerializeField] Transform t_testProjectile;
 
 
+    Animator animator;
+
     // private const float _threshold = 0.01f;
 
 
@@ -30,6 +32,8 @@ public class TPSController : MonoBehaviour
     {
         starterAssetsInputs = GetComponent<StarterAssetsInputs>();
         thirdPersonController = GetComponent<ThirdPersonController>();
+
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -38,11 +42,14 @@ public class TPSController : MonoBehaviour
         Vector3 mouseWorldPosition = Vector3.zero;
         Vector2 screenCenterPoint = new Vector2(Screen.width *0.5f, Screen.height * 0.5f);
         
+
         Ray ray = Camera.main.ScreenPointToRay(screenCenterPoint);
+        Transform t_hit = null; // 히트스캔에 필요.
         if (Physics.Raycast(ray, out RaycastHit raycastHit, 999f, aimColliderLayerMask))
         {
             mouseWorldPosition =  raycastHit.point;
             t_debug.position = raycastHit.point;
+            t_hit = raycastHit.transform;
         }
         
         
@@ -52,6 +59,9 @@ public class TPSController : MonoBehaviour
             aimVirtualCamera.gameObject.SetActive(true);
             thirdPersonController.SetSensitivity(sensitivity_onAiming);
             thirdPersonController.SetRotateOnMove(false);
+            animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1),1f,Time.deltaTime  *10f));
+
+
 
             Vector3 worldAimTarget = mouseWorldPosition;
             worldAimTarget.y = transform.position.y;    //잠깐 고정
@@ -64,6 +74,7 @@ public class TPSController : MonoBehaviour
             aimVirtualCamera.gameObject.SetActive(false);
             thirdPersonController.SetSensitivity(sensitivity_onNormal);
             thirdPersonController.SetRotateOnMove(true);
+            animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1),0,Time.deltaTime  *10f));
         }
 
 

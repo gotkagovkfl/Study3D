@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -15,12 +16,21 @@ public class Projectile : MonoBehaviour
 
     void Start()
     {
-        float speed = 10f;
+        float speed = 40f;
         rb.velocity = transform.forward * speed;
     }
 
     void OnTriggerEnter(Collider other)
     {
+        if (other.TryGetComponent(out ProjectTarget projectTarget ))
+        {
+            Debug.Log("타겟이당");
+        }
+        else
+        {
+            Debug.Log("타겟이 아니당");
+        }
+        
         Destroy(gameObject);
     }
 }
