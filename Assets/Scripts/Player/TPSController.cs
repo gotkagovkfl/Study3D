@@ -58,7 +58,8 @@ namespace Study3D
 
             
             // 조준 상태에 따라 플레이어 처리
-            Aim(starterAssetsInputs.aim, mouseWorldPosition);
+            // Aim(starterAssetsInputs.aim, mouseWorldPosition);
+            // Aim(true, mouseWorldPosition);
 
 
             //발사

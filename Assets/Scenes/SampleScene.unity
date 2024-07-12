@@ -647,10 +647,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aimVirtualCamera: {fileID: 3442188}
+  starterAssetsInputs: {fileID: 0}
   sensitivity_onNormal: 0
   sensitivity_onAiming: 0
-  mouseSensitivity: 100
-  playerBody: {fileID: 186892023}
+  aimColliderLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  t_debug: {fileID: 0}
+  t_muzzle: {fileID: 0}
+  t_testProjectile: {fileID: 0}
 --- !u!1 &244517231
 GameObject:
   m_ObjectHideFlags: 0
@@ -1413,7 +1418,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2239,7 +2244,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 40
+  field of view: 30
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -2266,7 +2271,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7, y: 2.6950002, z: -4}
+  m_LocalPosition: {x: 0.7, y: 2.6950002, z: -2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
