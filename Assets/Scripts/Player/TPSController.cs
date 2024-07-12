@@ -6,107 +6,98 @@ using StarterAssets;
 
 namespace Study3D
 {
-public class TPSController : MonoBehaviour
-{
-    [SerializeField] CinemachineVirtualCamera aimVirtualCamera;
-
-    [SerializeField] StarterAssetsInputs starterAssetsInputs;
-
-    ThirdPersonController thirdPersonController;
-
-    [SerializeField] float sensitivity_onNormal =1f;
-    [SerializeField] float sensitivity_onAiming = 0.9f;
-
-    [SerializeField] LayerMask aimColliderLayerMask = new();
-    [SerializeField] Transform t_debug;
-    [SerializeField] Transform t_muzzle;
-    [SerializeField] Transform t_testProjectile;
-
-
-    Animator animator;
-
-    // private const float _threshold = 0.01f;
-
-
-    void Awake()
+    public class TPSController : MonoBehaviour
     {
-        starterAssetsInputs = GetComponent<StarterAssetsInputs>();
-        thirdPersonController = GetComponent<ThirdPersonController>();
+        [SerializeField] CinemachineVirtualCamera aimVirtualCamera;
 
-        animator = GetComponent<Animator>();
-    }
+        [SerializeField] StarterAssetsInputs starterAssetsInputs;
 
-    void Update()
-    {
-        // 조준점이 가리키는 화면 좌표구하기. 
-        Vector3 mouseWorldPosition = Vector3.zero;
-        Vector2 screenCenterPoint = new Vector2(Screen.width *0.5f, Screen.height * 0.5f);
-        
+        ThirdPersonController thirdPersonController;
 
-        Ray ray = Camera.main.ScreenPointToRay(screenCenterPoint);
-        Transform t_hit = null; // 히트스캔에 필요.
-        if (Physics.Raycast(ray, out RaycastHit raycastHit, 999f, aimColliderLayerMask))
+        [SerializeField] float sensitivity_onNormal =1f;
+        [SerializeField] float sensitivity_onAiming = 0.9f;
+
+        [SerializeField] LayerMask aimColliderLayerMask = new();
+        [SerializeField] Transform t_debug;
+        [SerializeField] Transform t_muzzle;
+        [SerializeField] Transform t_testProjectile;
+
+
+        Animator animator;
+
+        // private const float _threshold = 0.01f;
+
+
+        void Awake()
         {
-            mouseWorldPosition =  raycastHit.point;
-            t_debug.position = raycastHit.point;
-            t_hit = raycastHit.transform;
+            starterAssetsInputs = GetComponent<StarterAssetsInputs>();
+            thirdPersonController = GetComponent<ThirdPersonController>();
+
+            animator = GetComponent<Animator>();
         }
-        
-        
-        // 조준 상태
-        if (starterAssetsInputs.aim)
+
+        void Update()
         {
-            aimVirtualCamera.gameObject.SetActive(true);
-            thirdPersonController.SetSensitivity(sensitivity_onAiming);
-            thirdPersonController.SetRotateOnMove(false);
-            animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1),1f,Time.deltaTime  *10f));
+            Transform t_hit = null; // 히트스캔에 필요.
+            // 조준점이 가리키는 화면 좌표구하기. 
+            Vector3 mouseWorldPosition;
+            Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width *0.5f, Screen.height * 0.5f) );  //조준점 위치(화면중앙));
+            // 조준점 방향 계산
+            if (Physics.Raycast(ray, out RaycastHit raycastHit, 999f, aimColliderLayerMask))
+            {
+                mouseWorldPosition =  raycastHit.point;
+                
+
+                t_hit = raycastHit.transform;
+            }
+            else
+            {
+                mouseWorldPosition = ray.GetPoint(50); // 적절한 거리로 설정
+            }
+            
+
+            
+            // 조준 상태에 따라 플레이어 처리
+            Aim(starterAssetsInputs.aim, mouseWorldPosition);
 
 
+            //발사
+            if (starterAssetsInputs.attack)
+            {
+                Vector3 dir_muzzleToAim = (mouseWorldPosition - t_muzzle.position).normalized;
 
-            Vector3 worldAimTarget = mouseWorldPosition;
-            worldAimTarget.y = transform.position.y;    //잠깐 고정
-            Vector3 aimDir = (worldAimTarget - transform.position).normalized;
+                Instantiate(t_testProjectile,t_muzzle.position, Quaternion.LookRotation(dir_muzzleToAim, Vector3.up));
+            }
 
-            transform.forward = Vector3.Lerp(transform.forward, aimDir,Time.deltaTime * 20f);
-        }
-        else
-        {
-            aimVirtualCamera.gameObject.SetActive(false);
-            thirdPersonController.SetSensitivity(sensitivity_onNormal);
-            thirdPersonController.SetRotateOnMove(true);
-            animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1),0,Time.deltaTime  *10f));
+            // 디버그용
+            t_debug.position = mouseWorldPosition;  // 조준점 충돌위치에 오브젝트 위치시키기
         }
 
 
-        if (starterAssetsInputs.attack)
+        //
+        void Aim(bool isOn,Vector3 mouseWorldPosition)
         {
-            Debug.Log("attack");
-            Vector3 aimDir = (mouseWorldPosition - t_muzzle.position).normalized;
-            Instantiate(t_testProjectile,t_muzzle.position, Quaternion.LookRotation(aimDir, Vector3.up));
-            starterAssetsInputs.attack = false;
+            float weight =0;
+            float sensitivity = sensitivity_onNormal ;
+            if (isOn)
+            {
+                weight =1;
+                sensitivity *= sensitivity_onAiming;
+
+                
+                // 조준 방향으로 몸 회전 
+                Vector3 worldAimTarget = mouseWorldPosition;
+                worldAimTarget.y = transform.position.y;    //잠깐 고정
+                Vector3 dir_bodyToAim = (worldAimTarget - transform.position).normalized;
+
+                transform.forward = Vector3.Lerp(transform.forward, dir_bodyToAim,Time.deltaTime * 20f);
+                Debug.DrawRay(transform.position, dir_bodyToAim*10, Color.green,0,true);
+            }
+            aimVirtualCamera.gameObject.SetActive(isOn);
+            thirdPersonController.SetRotateOnMove(!isOn);
+            thirdPersonController.SetSensitivity(sensitivity);
+            animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1), weight, Time.deltaTime  *10f));
         }
     }
-
-
-    public float mouseSensitivity = 100f;
-    public Transform playerBody;
-
-    private float xRotation = 0f;
-
-
-
-    public void Aim()
-    {
-        aimVirtualCamera.gameObject.SetActive(true);
-        thirdPersonController.SetSensitivity(sensitivity_onAiming);
-    }
-
-    public void UnAim()
-    {
-        aimVirtualCamera.gameObject.SetActive(false);
-        thirdPersonController.SetSensitivity(sensitivity_onNormal);
-    }
-
-}
 
 }

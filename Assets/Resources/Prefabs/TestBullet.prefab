@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 3674674170546599121}
   - component: {fileID: 611432465077576174}
   - component: {fileID: 5626709490536638473}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: TestBullet
-  m_TagString: Untagged
+  m_TagString: GoodProjectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -161,11 +161,11 @@ namespace Study3D
             if (playerInput.aim)
             {
                 Debug.Log("[key] 정조준");
-                tpsController.Aim();
+                // tpsController.Aim();
             }
             else
             {
-                tpsController.UnAim();
+                // tpsController.UnAim();
             }
             
         

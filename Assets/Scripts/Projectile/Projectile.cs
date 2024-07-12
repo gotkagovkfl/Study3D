@@ -31,6 +31,11 @@ public class Projectile : MonoBehaviour
             Debug.Log("타겟이 아니당");
         }
         
-        Destroy(gameObject);
+        //
+        if ( ! other.gameObject.CompareTag("GoodProjectile"))
+        {
+            Destroy(gameObject);
+        }
+        
     }
 }
