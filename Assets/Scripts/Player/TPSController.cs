@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using StarterAssets;
+using UnityEngine.Animations.Rigging;
 
 namespace Study3D
 {
@@ -21,6 +22,10 @@ namespace Study3D
         [SerializeField] Transform t_debug;
         [SerializeField] Transform t_muzzle;
         [SerializeField] Transform t_testProjectile;
+
+
+        [SerializeField] Rig rig_aiming;
+        [SerializeField] Rig rig_bodyOnAiming;
 
 
         Animator animator;
@@ -58,7 +63,7 @@ namespace Study3D
 
             
             // 조준 상태에 따라 플레이어 처리
-            // Aim(starterAssetsInputs.aim, mouseWorldPosition);
+            Aim(starterAssetsInputs.aim, mouseWorldPosition);
             // Aim(true, mouseWorldPosition);
 
 
@@ -97,7 +102,10 @@ namespace Study3D
             aimVirtualCamera.gameObject.SetActive(isOn);
             thirdPersonController.SetRotateOnMove(!isOn);
             thirdPersonController.SetSensitivity(sensitivity);
-            animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1), weight, Time.deltaTime  *10f));
+
+            rig_aiming.weight = Mathf.Lerp(rig_aiming.weight, weight, Time.deltaTime  *10f);            
+            rig_bodyOnAiming.weight = Mathf.Lerp(rig_bodyOnAiming.weight, weight, Time.deltaTime  *10f);            
+            // animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1), weight, Time.deltaTime  *10f));
         }
     }
 
