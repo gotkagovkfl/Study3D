@@ -656,6 +656,8 @@ MonoBehaviour:
   t_debug: {fileID: 0}
   t_muzzle: {fileID: 0}
   t_testProjectile: {fileID: 0}
+  rig_aiming: {fileID: 0}
+  rig_bodyOnAiming: {fileID: 0}
 --- !u!1 &244517231
 GameObject:
   m_ObjectHideFlags: 0
