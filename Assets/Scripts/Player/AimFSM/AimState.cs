@@ -20,6 +20,8 @@ public class HipFireState : AimBaseState
     public override void EnterState(AimStateManager aim)
     {
         aim.animator.SetBool("Aiming",false);
+
+        aim.aimCam.gameObject.SetActive(false);
     }
 
     public override void UpdateState(AimStateManager aim)
@@ -37,6 +39,8 @@ public class AimState : AimBaseState
     public override void EnterState(AimStateManager aim)
     {
         aim.animator.SetBool("Aiming",true);
+
+        aim.aimCam.gameObject.SetActive(true);
     }
 
     public override void UpdateState(AimStateManager aim)

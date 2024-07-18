@@ -11,11 +11,16 @@ public class AimStateManager : MonoBehaviour
     [SerializeField] Transform camFollowPos;
     [SerializeField] float mouseSense = 1f;
 
+    //
     public AimBaseState currState;
-    
     public HipFireState Hip = new();
     public AimState Aim = new();
 
+    [SerializeField] public CinemachineVirtualCamera aimCam;
+
+
+
+    //=============================================================================
     void Start()
     {
         animator = GetComponentInChildren<Animator>();
@@ -42,7 +47,7 @@ public class AimStateManager : MonoBehaviour
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, xAxis, transform.eulerAngles.z);
     }
 
-
+    //=============================================================================
 
     public void SwitchState(AimBaseState newState)
     {
