@@ -5,12 +5,24 @@ using Cinemachine;
 
 public class AimStateManager : MonoBehaviour
 {
+    public Animator animator;
+    
     public float xAxis, yAxis;
     [SerializeField] Transform camFollowPos;
     [SerializeField] float mouseSense = 1f;
 
+    public AimBaseState currState;
+    
+    public HipFireState Hip = new();
+    public AimState Aim = new();
+
+    void Start()
+    {
+        animator = GetComponentInChildren<Animator>();
 
 
+        SwitchState(Hip);
+    }
 
 
     void Update()
@@ -20,6 +32,8 @@ public class AimStateManager : MonoBehaviour
 
         yAxis = Mathf.Clamp(yAxis, -80, 80);
 
+
+        currState.UpdateState(this);
     }
 
     void LateUpdate()
@@ -30,6 +44,12 @@ public class AimStateManager : MonoBehaviour
 
 
 
+    public void SwitchState(AimBaseState newState)
+    {
+        currState = newState;
+        currState.EnterState(this);
+    }
+    
 
 
 }
