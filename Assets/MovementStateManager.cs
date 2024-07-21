@@ -2,18 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
+using ULT;
+
 
 public class MovementStateManager : MonoBehaviour
 {
     //
+    UltimatePlayerInput playerInput;
     [SerializeField] public Animator animator {get;private set;}
     [SerializeField] CharacterController _controller;
     Vector3 velocity;
     [SerializeField] float gravity = -9.81f;
 
-    public float hInput, vInput;
-    public Vector3 dir;
+    // public float hInput, vInput;
+    // public Vector3 dir;
+    public bool IsMoving
+    {
+        get
+        {
+            return playerInput.moveVector.sqrMagnitude >=0.1f;
+        }
+    }
+
+    public bool IsFoward
+    {
+        get
+        {
+            return playerInput.move_v > 0f;
+        }
+    }
 
 
     public float currMoveSpeed ;
@@ -39,6 +56,7 @@ public class MovementStateManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerInput = GetComponent<UltimatePlayerInput>();
         animator = GetComponent<Animator>();
         _controller = GetComponent<CharacterController>();    
 
@@ -46,14 +64,20 @@ public class MovementStateManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        GetDirectionAndMove();
+        // move
+        // Debug.Log(playerInput.moveVector);
+        Vector3 dir = transform.forward * playerInput.move_v + transform.right * playerInput.move_h;
+
+        _controller.Move( dir.normalized * currMoveSpeed * Time.deltaTime );
+        
+        // 
         Gravity();
 
-
-        animator.SetFloat("hzInput",hInput);
-        animator.SetFloat("vInput",vInput);
+        
+        animator.SetFloat("hzInput",playerInput.move_h);
+        animator.SetFloat("vInput",playerInput.move_v);
         currState.UpdateState(this);
     }
 
@@ -63,29 +87,7 @@ public class MovementStateManager : MonoBehaviour
         currState = newState;
         currState.EnterState(this);
     }
-    
-    
-    
-    
-    void GetDirectionAndMove()
-    {
-        hInput = Input.GetAxis("Horizontal");
-        vInput = Input.GetAxis("Vertical");
 
-        // if( hInput !=0)
-        // {
-        //     hInput = hInput>0? 1:-1;
-        // }
-        // if( vInput !=0)
-        // {
-        //     vInput = vInput>0? 1:-1;
-        // }
-
-
-        dir = transform.forward * vInput + transform.right * hInput;
-
-        _controller.Move( dir.normalized * currMoveSpeed * Time.deltaTime );
-    }
 
     void Gravity()
     {

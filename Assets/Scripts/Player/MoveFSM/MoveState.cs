@@ -4,10 +4,10 @@ using UnityEngine;
 
 public abstract class MovementBaseState 
 {
-    public abstract void EnterState(MovementStateManager movementStateManager);
+    public abstract void EnterState(MovementStateManager move);
     
 
-    public abstract void UpdateState(MovementStateManager movementStateManager);
+    public abstract void UpdateState(MovementStateManager move);
     
 
     
@@ -17,127 +17,127 @@ public abstract class MovementBaseState
 
 public class IdleState : MovementBaseState
 {
-    public override void EnterState(MovementStateManager movementStateManager)
+    public override void EnterState(MovementStateManager move)
     {
 
     }
 
-    public override void UpdateState(MovementStateManager movementStateManager)
+    public override void UpdateState(MovementStateManager move)
     {
-        if (movementStateManager.dir.sqrMagnitude > 0.1f)
+        if (move.IsMoving)
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                movementStateManager.SwitchState(movementStateManager.runState);
+                move.SwitchState(move.runState);
             }
             else
             {
-                movementStateManager.SwitchState(movementStateManager.walkState);
+                move.SwitchState(move.walkState);
             }
             
         }
 
         if (Input.GetKeyDown(KeyCode.C))
         {
-            movementStateManager.SwitchState(movementStateManager.crouchState);
+            move.SwitchState(move.crouchState);
         }
     }
 }
 
 public class WalkState : MovementBaseState
 {
-    public override void EnterState(MovementStateManager movementStateManager)
+    public override void EnterState(MovementStateManager move)
     {
-        movementStateManager.animator.SetBool("Walking",true);
+        move.animator.SetBool("Walking",true);
     }
 
-    public override void UpdateState(MovementStateManager movementStateManager)
+    public override void UpdateState(MovementStateManager move)
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            ExitState(movementStateManager, movementStateManager.runState);
+            ExitState(move, move.runState);
         }
         else if (Input.GetKey(KeyCode.C))
         {
-            ExitState(movementStateManager, movementStateManager.crouchState);
+            ExitState(move, move.crouchState);
         }
-        else if (movementStateManager.dir.sqrMagnitude < 0.1f)
+        else if (!move.IsMoving)
         {
-            ExitState(movementStateManager, movementStateManager.idleState);
+            ExitState(move, move.idleState);
         }
 
-        if( movementStateManager.vInput < 0) movementStateManager.currMoveSpeed = movementStateManager.walkBackSpeed;
-        else movementStateManager.currMoveSpeed = movementStateManager.walkSpeed;
+        if( move.IsFoward) move.currMoveSpeed = move.walkSpeed;
+        else move.currMoveSpeed = move.walkBackSpeed;
     }
 
-    public void ExitState(MovementStateManager movementStateManager, MovementBaseState state)
+    public void ExitState(MovementStateManager move, MovementBaseState state)
     {
-        movementStateManager.animator.SetBool("Walking", false);
-        movementStateManager.SwitchState(state);
+        move.animator.SetBool("Walking", false);
+        move.SwitchState(state);
     }
 
 }
 
 public class CrouchState : MovementBaseState
 {
-    public override void EnterState(MovementStateManager movementStateManager)
+    public override void EnterState(MovementStateManager move)
     {
-        movementStateManager.animator.SetBool("Crouching",true);
+        move.animator.SetBool("Crouching",true);
     }
 
-    public override void UpdateState(MovementStateManager movementStateManager)
+    public override void UpdateState(MovementStateManager move)
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            ExitState(movementStateManager, movementStateManager.runState);
+            ExitState(move, move.runState);
         }
         else if (Input.GetKeyDown(KeyCode.C))
         {
-            if (movementStateManager.dir.sqrMagnitude < 0.1f)
-                ExitState(movementStateManager, movementStateManager.idleState);
+            if (!move.IsMoving)
+                ExitState(move, move.idleState);
             else 
             {
-                ExitState(movementStateManager, movementStateManager.walkState);
+                ExitState(move, move.walkState);
             }
         }
 
-        if( movementStateManager.vInput < 0) movementStateManager.currMoveSpeed = movementStateManager.crouchBackSpeed;
-        else movementStateManager.currMoveSpeed = movementStateManager.crouchSpeed;
+        if( move.IsFoward ) move.currMoveSpeed = move.crouchSpeed;
+        else move.currMoveSpeed = move.crouchBackSpeed;
     }
 
-        public void ExitState(MovementStateManager movementStateManager, MovementBaseState state)
+        public void ExitState(MovementStateManager move, MovementBaseState state)
     {
-        movementStateManager.animator.SetBool("Crouching", false);
-        movementStateManager.SwitchState(state);
+        move.animator.SetBool("Crouching", false);
+        move.SwitchState(state);
     }
 }
 
 public class RunState : MovementBaseState
 {
-    public override void EnterState(MovementStateManager movementStateManager)
+    public override void EnterState(MovementStateManager move)
     {
-        movementStateManager.animator.SetBool("Running",true);
+        move.animator.SetBool("Running",true);
     }
 
-    public override void UpdateState(MovementStateManager movementStateManager)
+    public override void UpdateState(MovementStateManager move)
     {
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
-            ExitState(movementStateManager, movementStateManager.walkState);
+            ExitState(move, move.walkState);
         }
-        else if (movementStateManager.dir.sqrMagnitude < 0.1f)
+        else if (!move.IsMoving)
         {
-            ExitState(movementStateManager, movementStateManager.idleState);
+            ExitState(move, move.idleState);
         }
 
         
-        if( movementStateManager.vInput < 0) movementStateManager.currMoveSpeed = movementStateManager.runBackSpeed;
-        else movementStateManager.currMoveSpeed = movementStateManager.runSpeed;
+        if( move.IsFoward) move.currMoveSpeed  = move.runSpeed;
+        else move.currMoveSpeed= move.runBackSpeed;
 
     }
-    public void ExitState(MovementStateManager movementStateManager, MovementBaseState state)
+    public void ExitState(MovementStateManager move, MovementBaseState state)
     {
-        movementStateManager.animator.SetBool("Running", false);
-        movementStateManager.SwitchState(state);
+        move.animator.SetBool("Running", false);
+        move.SwitchState(state);
     }
 }
