@@ -7,14 +7,51 @@ using UnityEngine.Rendering;
 public class VCamController : MonoBehaviour
 {
     // CinemachineVirtualCamera vCam;
-    
+    [SerializeField] CinemachineVirtualCamera followCam;
+    [SerializeField] CinemachineVirtualCamera AimCam;
+
 
     void Awake()
     {
         // vCam = GetComponent<CinemachineVirtualCamera>();
         // vCam.m_Transitions.m_OnCameraLive.AddListener(OnCameraLive);
 
+        
+    }
+    void Start()
+    {
+        GameEvents.onPlayerAim.AddListener(OnPlayerAim);
         Camera.main.GetComponent<CinemachineBrain>().m_CameraActivatedEvent.AddListener(OnCameraActive); 
+    }
+
+
+    void OnPlayerAim(bool isOn)
+    {
+        if (isOn)
+        {
+            if (!AimCam.isActiveAndEnabled)
+            {
+                AimCam.gameObject.SetActive(true);
+                followCam.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            if (!followCam.isActiveAndEnabled)
+            {
+                AimCam.gameObject.SetActive(false);
+                followCam.gameObject.SetActive(true);
+            }
+        }
+        // {
+        //     if(!AimCam.activeSelf)    
+        //         AimCam.SetActive(true);
+        // }
+        // else
+        // {
+        //     if(AimCam.activeSelf)   
+        //         AimCam.SetActive(false);
+        // }
     }
 
 
@@ -36,6 +73,7 @@ public class VCamController : MonoBehaviour
 
             newPov.m_VerticalAxis.Value = currPov.m_VerticalAxis.Value;
             newPov.m_HorizontalAxis.Value = currPov.m_HorizontalAxis.Value;
+
 
             // Debug.Log($"{oldCam.VirtualCameraGameObject)} : {currPov.m_HorizontalAxis.Value}, {currPov.m_VerticalAxis.Value}");
             // Debug.Log($"{newCam.VirtualCameraGameObject} :  {newPov.m_HorizontalAxis.Value}, {newPov.m_VerticalAxis.Value}");

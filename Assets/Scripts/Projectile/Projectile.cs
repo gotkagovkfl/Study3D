@@ -22,20 +22,20 @@ public class Projectile : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out ProjectTarget projectTarget ))
-        {
-            Debug.Log("타겟이당");
-        }
-        else
-        {
-            Debug.Log("타겟이 아니당");
-        }
+        // if (other.TryGetComponent(out ProjectTarget projectTarget ))
+        // {
+        //     Debug.Log("타겟이당");
+        // }
+        // else
+        // {
+        //     Debug.Log("타겟이 아니당");
+        // }
         
-        //
-        if ( ! other.gameObject.CompareTag("GoodProjectile"))
-        {
-            Destroy(gameObject);
-        }
+        // //
+        // if ( ! other.gameObject.CompareTag("GoodProjectile"))
+        // {
+        //     Destroy(gameObject);
+        // }
         
     }
 }

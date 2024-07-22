@@ -35,8 +35,23 @@ namespace ULT
         float rotationSpeed = 10f;
         #endregion
 
+        #region Aim
+        [SerializeField]
+        bool isAiming;
+        #endregion
+
+        #region Shoot
+        [SerializeField]
+        GameObject prefab_bullet;
+        [SerializeField]
+        Transform t_muzzle;
+        [SerializeField]
+        Transform t_bulletParent;
+        
+        #endregion
 
         //====================================================================================
+
         private void Start()
         {
             controller = GetComponent<CharacterController>();
@@ -73,7 +88,45 @@ namespace ULT
             // gravity
             playerVelocity.y += gravityValue * Time.deltaTime;
             controller.Move(playerVelocity * Time.deltaTime);
-        }
-    }
-}
 
+            // aim
+            Aim(playerInput.aim);
+
+            if (playerInput.shoot)
+            {
+                Shoot();
+            }
+        }
+
+        //============================================================================
+
+        /// <summary>
+        /// 조준. - 
+        /// </summary>
+        /// <param name="isOn"></param>
+        void Aim(bool isOn)
+        {
+            isAiming = isOn;
+            // if (isAiming)
+            // {
+            //     if(!AimCam.activeSelf)    
+            //         AimCam.SetActive(true);
+            // }
+            // else
+            // {
+            //     if(AimCam.activeSelf)   
+            //         AimCam.SetActive(false);
+            // }
+            GameEvents.onPlayerAim.Invoke(isOn);
+        }
+
+        void Shoot()
+        {
+            Debug.Log("발사!");
+            Instantiate(prefab_bullet, t_muzzle.position, Quaternion.identity,t_bulletParent);
+        }
+
+    }
+    
+
+}
