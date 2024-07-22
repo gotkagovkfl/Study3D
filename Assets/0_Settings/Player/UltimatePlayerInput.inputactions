@@ -36,7 +36,7 @@
                     "name": "Aim",
                     "type": "PassThrough",
                     "id": "ade48444-8da8-40de-ab91-1cca226e9322",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
