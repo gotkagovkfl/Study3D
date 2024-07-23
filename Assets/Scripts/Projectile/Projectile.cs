@@ -22,6 +22,8 @@ public class Projectile : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        
+        
         // if (other.TryGetComponent(out ProjectTarget projectTarget ))
         // {
         //     Debug.Log("타겟이당");
@@ -38,4 +40,6 @@ public class Projectile : MonoBehaviour
         // }
         
     }
+
+
 }

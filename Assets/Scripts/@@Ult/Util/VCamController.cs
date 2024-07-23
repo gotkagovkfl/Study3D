@@ -6,7 +6,9 @@ using UnityEngine.Rendering;
 
 public class VCamController : MonoBehaviour
 {
-    // CinemachineVirtualCamera vCam;
+    //
+
+
     [SerializeField] CinemachineVirtualCamera followCam;
     [SerializeField] CinemachineVirtualCamera AimCam;
 
@@ -23,6 +25,14 @@ public class VCamController : MonoBehaviour
         GameEvents.onPlayerAim.AddListener(OnPlayerAim);
         Camera.main.GetComponent<CinemachineBrain>().m_CameraActivatedEvent.AddListener(OnCameraActive); 
     }
+
+    void Update()
+    {
+
+    }
+
+
+    //====================================================================
 
 
     void OnPlayerAim(bool isOn)

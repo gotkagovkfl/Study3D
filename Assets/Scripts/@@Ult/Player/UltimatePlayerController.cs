@@ -7,8 +7,6 @@ namespace ULT
     [RequireComponent(typeof(CharacterController))]
     public class UltimatePlayerController : MonoBehaviour
     {
-        // UltimatePlayerInput playerInput;
-
         UltimatePlayerNewInput playerInput;
         private CharacterController controller;
         [SerializeField]
@@ -47,8 +45,11 @@ namespace ULT
         Transform t_muzzle;
         [SerializeField]
         Transform t_bulletParent;
-        
+
         #endregion
+
+    
+
 
         //====================================================================================
 
@@ -80,25 +81,43 @@ namespace ULT
             dir.y = 0;      // 방향 조절에 필요 없기떄문.
             controller.Move(dir.normalized * Time.deltaTime * playerSpeed);
 
+
             // rotate
-            Quaternion targetRot = Quaternion.Euler(0,t_camera.eulerAngles.y,0);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
+            Rotate(playerInput.mouseWorldPos);
 
 
             // gravity
             playerVelocity.y += gravityValue * Time.deltaTime;
             controller.Move(playerVelocity * Time.deltaTime);
 
+
+            //------------ 
+
+
             // aim
             Aim(playerInput.aim);
 
+            //shoot
             if (playerInput.shoot)
             {
-                Shoot();
+                Shoot(playerInput.mouseWorldPos);
             }
+
+
         }
 
         //============================================================================
+
+        void Rotate(Vector3 targetPos)
+        {
+            // 조준 방향으로 몸 회전 
+            targetPos.y = transform.position.y;    //y고정
+            Vector3 dir_bodyToAim = (targetPos - transform.position).normalized;
+
+            transform.forward = Vector3.Lerp(transform.forward, dir_bodyToAim,Time.deltaTime * 20f);
+            Debug.DrawRay(transform.position, dir_bodyToAim*10, Color.green,0,true);
+        }
+
 
         /// <summary>
         /// 조준. - 
@@ -107,23 +126,15 @@ namespace ULT
         void Aim(bool isOn)
         {
             isAiming = isOn;
-            // if (isAiming)
-            // {
-            //     if(!AimCam.activeSelf)    
-            //         AimCam.SetActive(true);
-            // }
-            // else
-            // {
-            //     if(AimCam.activeSelf)   
-            //         AimCam.SetActive(false);
-            // }
             GameEvents.onPlayerAim.Invoke(isOn);
         }
 
-        void Shoot()
+        void Shoot(Vector3 targetPos)
         {
             Debug.Log("발사!");
-            Instantiate(prefab_bullet, t_muzzle.position, Quaternion.identity,t_bulletParent);
+        
+            Vector3 dir_muzzleToAim = (targetPos - t_muzzle.position).normalized;
+            Instantiate(prefab_bullet,t_muzzle.position, Quaternion.LookRotation(dir_muzzleToAim, Vector3.up));
         }
 
     }
