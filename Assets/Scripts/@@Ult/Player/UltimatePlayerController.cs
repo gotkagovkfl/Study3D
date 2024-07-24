@@ -54,12 +54,16 @@ namespace ULT
         Animator animator;
         [SerializeField]
         int animParaId_moveX, animParaId_moveZ;
+        int jumpAnimation;
         [SerializeField]
         Vector2 currAnimBlendVector;
         [SerializeField]
         Vector2 animVelocity;
         [SerializeField]
         float animSmoothTime = 0.05f;
+        [SerializeField]
+        float animationTransition  = 0.1f;
+        
         #endregion
     
 
@@ -76,6 +80,7 @@ namespace ULT
             animator = GetComponent<Animator>();
             animParaId_moveX = Animator.StringToHash("MoveX");
             animParaId_moveZ = Animator.StringToHash("MoveZ");
+            jumpAnimation = Animator.StringToHash("Jump");
         }
 
         void Update()
@@ -135,6 +140,9 @@ namespace ULT
             currAnimBlendVector = Vector2.SmoothDamp(currAnimBlendVector, moveVector,ref animVelocity,animSmoothTime);  // 애니메이션 간 자연스러운 전환을 위해
             animator.SetFloat(animParaId_moveX, currAnimBlendVector.x);
             animator.SetFloat(animParaId_moveZ, currAnimBlendVector.y);
+
+            // animator.SetFloat(animParaId_moveX, moveVector.x);
+            // animator.SetFloat(animParaId_moveZ, moveVector.y);
         }
 
 
