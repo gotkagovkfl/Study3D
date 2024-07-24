@@ -53,8 +53,6 @@ public class UltimatePlayerNewInput : MonoBehaviour
         aim = aimAction.ReadValue<float>()>0;
         shoot = shootAction.ReadValue<float>()>0;
 
-
-        Debug.Log(moveVector);
         //
         Transform t_hit = null; // 히트스캔에 필요.
         Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width *0.5f, Screen.height * 0.5f) );  //조준점 위치(화면중앙));

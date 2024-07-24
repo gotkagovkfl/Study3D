@@ -10,11 +10,17 @@ namespace ULT
         UltimatePlayerNewInput playerInput;
         private CharacterController controller;
         
+        //상태
+        public bool IsGrounded => controller.isGrounded;
+
+
 
         [SerializeField]
         private Vector3 playerVelocity;
         
         #region Move
+        [SerializeField] 
+        private Vector3 lastMoveDir;
         [SerializeField] 
         private float playerSpeed = 5f;
         #endregion
@@ -29,8 +35,8 @@ namespace ULT
         #endregion
 
         #region Rotate      
-        [SerializeField]
-        Transform t_camera;
+        // [SerializeField]
+        // Transform t_camera;
         [SerializeField]
         float rotationSpeed = 10f;
         #endregion
@@ -75,7 +81,7 @@ namespace ULT
             controller = GetComponent<CharacterController>();
             playerInput = GetComponent<UltimatePlayerNewInput>();
             
-            t_camera = Camera.main.transform;
+            // t_camera = Camera.main.transform;
 
             animator = GetComponent<Animator>();
             animParaId_moveX = Animator.StringToHash("MoveX");
@@ -86,17 +92,21 @@ namespace ULT
         void Update()
         {
             groundedPlayer = controller.isGrounded;
-            if (groundedPlayer && playerVelocity.y < 0)
+            if (groundedPlayer  && playerVelocity.y < 0)
             {
                 playerVelocity.y = 0f;
             }
 
+            Move(); 
+
             // jump
-            if (playerInput.jump && groundedPlayer)
+            if (groundedPlayer && playerInput.jump)
             {
                 Jump();
             }
-            Move(); 
+
+            
+
             Rotate(playerInput.mouseWorldPos);
 
             // gravity
@@ -131,24 +141,30 @@ namespace ULT
 
         void Move()
         {
+            // 땅위의 경우
             Vector2 moveVector = playerInput.moveVector;
-            Vector3 dir = t_camera.right.normalized * moveVector.x + t_camera.forward.normalized * moveVector.y;
-            dir.y = 0;      // 방향 조절에 필요 없기떄문.
-            controller.Move(dir.normalized * Time.deltaTime * playerSpeed);
+            lastMoveDir = transform.right* moveVector.x + transform.forward * moveVector.y;
+            lastMoveDir.y = 0;      // 방향 조절에 필요 없기떄문.
+            controller.Move(lastMoveDir.normalized * Time.deltaTime * playerSpeed);
 
             // animations
             currAnimBlendVector = Vector2.SmoothDamp(currAnimBlendVector, moveVector,ref animVelocity,animSmoothTime);  // 애니메이션 간 자연스러운 전환을 위해
             animator.SetFloat(animParaId_moveX, currAnimBlendVector.x);
             animator.SetFloat(animParaId_moveZ, currAnimBlendVector.y);
+            // if (IsGrounded) // 발이 땅에 붙어있는 경우에만 이동 애니메이션 
+            // {
+                
 
-            // animator.SetFloat(animParaId_moveX, moveVector.x);
-            // animator.SetFloat(animParaId_moveZ, moveVector.y);
+                animator.SetBool("IsGrounded",true);
+            // }
         }
-
 
         void Jump()
         {
             playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+
+            animator.CrossFade(jumpAnimation,animationTransition);
+            animator.SetBool("IsGrounded",false);
         }
 
 

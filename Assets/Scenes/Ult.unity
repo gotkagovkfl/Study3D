@@ -1717,11 +1717,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerVelocity: {x: 0, y: 0, z: 0}
+  lastMoveDir: {x: 0, y: 0, z: 0}
   playerSpeed: 5
   groundedPlayer: 0
   jumpHeight: 1
   gravityValue: -9.81
-  t_camera: {fileID: 0}
   rotationSpeed: 10
   isAiming: 0
   prefab_bullet: {fileID: 8818234065855440918, guid: 065633a934a4a1a4083a7112acb3c3d5, type: 3}
