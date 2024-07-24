@@ -9,6 +9,8 @@ namespace ULT
     {
         UltimatePlayerNewInput playerInput;
         private CharacterController controller;
+        
+
         [SerializeField]
         private Vector3 playerVelocity;
         
@@ -48,6 +50,17 @@ namespace ULT
 
         #endregion
 
+        #region Animation
+        Animator animator;
+        [SerializeField]
+        int animParaId_moveX, animParaId_moveZ;
+        [SerializeField]
+        Vector2 currAnimBlendVector;
+        [SerializeField]
+        Vector2 animVelocity;
+        [SerializeField]
+        float animSmoothTime = 0.05f;
+        #endregion
     
 
 
@@ -57,8 +70,12 @@ namespace ULT
         {
             controller = GetComponent<CharacterController>();
             playerInput = GetComponent<UltimatePlayerNewInput>();
-
+            
             t_camera = Camera.main.transform;
+
+            animator = GetComponent<Animator>();
+            animParaId_moveX = Animator.StringToHash("MoveX");
+            animParaId_moveZ = Animator.StringToHash("MoveZ");
         }
 
         void Update()
@@ -72,27 +89,16 @@ namespace ULT
             // jump
             if (playerInput.jump && groundedPlayer)
             {
-                playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+                Jump();
             }
-
-            // move
-            Vector3 moveVector = playerInput.moveVector;
-            Vector3 dir = t_camera.right.normalized * moveVector.x + t_camera.forward.normalized * moveVector.y;
-            dir.y = 0;      // 방향 조절에 필요 없기떄문.
-            controller.Move(dir.normalized * Time.deltaTime * playerSpeed);
-
-
-            // rotate
+            Move(); 
             Rotate(playerInput.mouseWorldPos);
-
 
             // gravity
             playerVelocity.y += gravityValue * Time.deltaTime;
             controller.Move(playerVelocity * Time.deltaTime);
 
-
             //------------ 
-
 
             // aim
             Aim(playerInput.aim);
@@ -116,6 +122,25 @@ namespace ULT
 
             transform.forward = Vector3.Lerp(transform.forward, dir_bodyToAim,Time.deltaTime * 20f);
             Debug.DrawRay(transform.position, dir_bodyToAim*10, Color.green,0,true);
+        }
+
+        void Move()
+        {
+            Vector2 moveVector = playerInput.moveVector;
+            Vector3 dir = t_camera.right.normalized * moveVector.x + t_camera.forward.normalized * moveVector.y;
+            dir.y = 0;      // 방향 조절에 필요 없기떄문.
+            controller.Move(dir.normalized * Time.deltaTime * playerSpeed);
+
+            // animations
+            currAnimBlendVector = Vector2.SmoothDamp(currAnimBlendVector, moveVector,ref animVelocity,animSmoothTime);  // 애니메이션 간 자연스러운 전환을 위해
+            animator.SetFloat(animParaId_moveX, currAnimBlendVector.x);
+            animator.SetFloat(animParaId_moveZ, currAnimBlendVector.y);
+        }
+
+
+        void Jump()
+        {
+            playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
         }
 
 
