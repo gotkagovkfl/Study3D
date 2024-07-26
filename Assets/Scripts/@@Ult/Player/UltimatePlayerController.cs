@@ -8,10 +8,10 @@ namespace ULT
     public class UltimatePlayerController : MonoBehaviour
     {
         UltimatePlayerNewInput playerInput;
-        private CharacterController controller;
+        [SerializeField] private CharacterController controller;
         
         //상태
-        public bool IsGrounded => controller.isGrounded;
+        // public bool IsGrounded => controller.isGrounded;
 
 
 
@@ -73,7 +73,6 @@ namespace ULT
         #endregion
     
 
-
         //====================================================================================
 
         private void Start()
@@ -91,13 +90,19 @@ namespace ULT
 
         void Update()
         {
-            groundedPlayer = controller.isGrounded;
+            // gravity
+            playerVelocity.y += gravityValue * Time.deltaTime;
+            controller.Move(playerVelocity * Time.deltaTime);
+
+            
+            //
+            groundedPlayer =  controller.isGrounded;        // controller.isGrounded는 해당 프로퍼티 호출 직전 움직임을 보고 접지 여부를 판단하기 때문에, 프레임 별 딱 한번 호출해야한다. 
             if (groundedPlayer  && playerVelocity.y < 0)
             {
                 playerVelocity.y = 0f;
             }
 
-            Move(); 
+            Debug.Log($"{groundedPlayer}  ");
 
             // jump
             if (groundedPlayer && playerInput.jump)
@@ -105,13 +110,11 @@ namespace ULT
                 Jump();
             }
 
+            Move();
             
 
             Rotate(playerInput.mouseWorldPos);
 
-            // gravity
-            playerVelocity.y += gravityValue * Time.deltaTime;
-            controller.Move(playerVelocity * Time.deltaTime);
 
             //------------ 
 
@@ -155,8 +158,9 @@ namespace ULT
             // {
                 
 
-                animator.SetBool("IsGrounded",true);
-            // }
+            animator.SetBool("IsGrounded",groundedPlayer);
+            
+                // }
         }
 
         void Jump()
