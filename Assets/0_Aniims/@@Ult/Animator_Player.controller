@@ -226,7 +226,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 7877688116356202134}
-    m_Position: {x: 310, y: 190, z: 0}
+    m_Position: {x: 310, y: 170, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 639645036311383971}
     m_Position: {x: 310, y: 100, z: 0}
@@ -300,6 +300,12 @@ AnimatorController:
     m_Controller: {fileID: 9100000}
   - m_Name: IsGrounded
     m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: Land
+    m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0

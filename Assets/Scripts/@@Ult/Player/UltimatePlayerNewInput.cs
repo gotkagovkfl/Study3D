@@ -23,7 +23,8 @@ public class UltimatePlayerNewInput : MonoBehaviour
 
     public bool shoot {get;private set;}
 
-    public Vector3 mouseWorldPos {get;private set;} // 마우스가 가리키는 곳에 월드 좌표 
+    public Vector3 mouseDir {get;private set;}   // 마우스가 가리키는 방향 
+    public Vector3 mouseWorldPos {get;private set;} // 마우스가 가리키는 곳의 월드 좌표 
     public float xAxis{get;private set;}        //마우스 움직임 x축
     public float yAxis {get;private set;}       // 마우스 움직임 y축
     
@@ -57,6 +58,7 @@ public class UltimatePlayerNewInput : MonoBehaviour
         Transform t_hit = null; // 히트스캔에 필요.
         Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width *0.5f, Screen.height * 0.5f) );  //조준점 위치(화면중앙));
         // 조준점 방향 계산
+        mouseDir = ray.GetPoint(50);
         if (Physics.Raycast(ray, out RaycastHit raycastHit, 999f, aimColliderLayerMask))    // 마우스가 가리키는 곳에 뭔가 있다면
         {
             mouseWorldPos =  raycastHit.point;
@@ -64,9 +66,9 @@ public class UltimatePlayerNewInput : MonoBehaviour
         }
         else    // 마우스가 가리키는 곳에 아무것도 없으면, 
         {
-            mouseWorldPos = ray.GetPoint(50); // 적절한 거리로 설정
+            mouseWorldPos = mouseDir; // 적절한 거리로 설정
         }
-
+        
         t_aimTarget.position = mouseWorldPos;
     }
 

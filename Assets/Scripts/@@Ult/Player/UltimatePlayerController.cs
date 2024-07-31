@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using DG.Tweening;
 // using UnityEngine.InputSystem;
 
 namespace ULT
@@ -97,23 +98,24 @@ namespace ULT
             
             //
             groundedPlayer =  controller.isGrounded;        // controller.isGrounded는 해당 프로퍼티 호출 직전 움직임을 보고 접지 여부를 판단하기 때문에, 프레임 별 딱 한번 호출해야한다. 
+            
             if (groundedPlayer  && playerVelocity.y < 0)
             {
                 playerVelocity.y = 0f;
             }
 
-            Debug.Log($"{groundedPlayer}  ");
+            // Debug.Log($"{groundedPlayer}  ");
 
             // jump
             if (groundedPlayer && playerInput.jump)
             {
                 Jump();
-            }
+            } 
 
             Move();
             
 
-            Rotate(playerInput.mouseWorldPos);
+            Rotate(playerInput.mouseDir);
 
 
             //------------ 
@@ -124,9 +126,12 @@ namespace ULT
             //shoot
             if (playerInput.shoot)
             {
-                Shoot(playerInput.mouseWorldPos);
+                //Shoot(playerInput.mouseWorldPos);
             }
 
+
+            //==========
+            animator.SetBool("IsGrounded",groundedPlayer);
 
         }
 
@@ -154,23 +159,14 @@ namespace ULT
             currAnimBlendVector = Vector2.SmoothDamp(currAnimBlendVector, moveVector,ref animVelocity,animSmoothTime);  // 애니메이션 간 자연스러운 전환을 위해
             animator.SetFloat(animParaId_moveX, currAnimBlendVector.x);
             animator.SetFloat(animParaId_moveZ, currAnimBlendVector.y);
-            // if (IsGrounded) // 발이 땅에 붙어있는 경우에만 이동 애니메이션 
-            // {
-                
-
-            animator.SetBool("IsGrounded",groundedPlayer);
-            
-                // }
         }
 
         void Jump()
         {
             playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
 
-            animator.CrossFade(jumpAnimation,animationTransition);
-            animator.SetBool("IsGrounded",false);
-        }
-
+            animator.CrossFade(jumpAnimation,animationTransition);  // jump 애니메이션 실행. 
+        }   
 
         /// <summary>
         /// 조준. - 
