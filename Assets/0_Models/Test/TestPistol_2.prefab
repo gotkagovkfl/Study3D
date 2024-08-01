@@ -697,6 +697,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1705fd8e7a5b6be498ef37b29f55356d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  waeponAnimation: {fileID: 7400000, guid: 6a4165274ee93684c99658bcec0f1ee4, type: 2}
 --- !u!1 &7709791654837908244
 GameObject:
   m_ObjectHideFlags: 0

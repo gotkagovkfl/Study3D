@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TestWeapon : MonoBehaviour
 {
+    public AnimationClip waeponAnimation;
+    
+    
     // Start is called before the first frame update
     void Start()
     {

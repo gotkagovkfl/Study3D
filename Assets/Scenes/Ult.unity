@@ -782,6 +782,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 724539908}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+--- !u!1001 &629779736
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2070972716}
+    m_Modifications:
+    - target: {fileID: 2349258150479485684, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2349258150479485684, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2349258150479485684, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.36500004
+      objectReference: {fileID: 0}
+    - target: {fileID: 2349258150479485684, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2349258150479485684, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2349258150479485684, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2349258150479485684, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2349258150479485684, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2349258150479485684, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2349258150479485684, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3157565929852043342, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
+      propertyPath: m_Name
+      value: TestRifle_1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
+--- !u!4 &629779737 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2349258150479485684, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
+  m_PrefabInstance: {fileID: 629779736}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &670440108
 GameObject:
   m_ObjectHideFlags: 0
@@ -823,7 +885,7 @@ GameObject:
   m_Component:
   - component: {fileID: 724539908}
   m_Layer: 0
-  m_Name: WeaponPivot
+  m_Name: WeaponHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -842,8 +904,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 670440109}
   - {fileID: 575306669}
+  - {fileID: 670440109}
+  - {fileID: 2070972716}
   m_Father: {fileID: 1861795428}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &786803842
@@ -1898,6 +1961,7 @@ GameObject:
   - component: {fileID: 1288686525}
   - component: {fileID: 1288686530}
   - component: {fileID: 1288686531}
+  - component: {fileID: 1288686533}
   - component: {fileID: 1288686532}
   m_Layer: 0
   m_Name: Player
@@ -2042,7 +2106,7 @@ Animator:
   m_GameObject: {fileID: 1288686519}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: ff5198a19515de840908b1537f0f9807, type: 3}
-  m_Controller: {fileID: 9100000, guid: c8fd582be8949274f81bef3990840baf, type: 2}
+  m_Controller: {fileID: 22100000, guid: 00387ff4f39b9434db561693825a6308, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2176,8 +2240,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8a7c5badbd971e438cc364665616139, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInput: {fileID: 0}
   handIK: {fileID: 1716946876}
-  weaponPivot: {fileID: 724539908}
+  weaponParent: {fileID: 2070972716}
+  t_rHandGrip: {fileID: 670440109}
+  t_lHandGrip: {fileID: 575306669}
+  prefab_testRifle: {fileID: 3157565929852043342, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
+  prefab_testPistol: {fileID: 1785435777294800262, guid: 9033713e3365e484db90b9c78557d902, type: 3}
+--- !u!114 &1288686533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288686519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbc3c33f9017b4349809e5efea2c0ff3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1435530878
 GameObject:
   m_ObjectHideFlags: 0
@@ -3401,6 +3482,38 @@ Transform:
   - {fileID: 1504695152}
   - {fileID: 41897740}
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2070972715
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2070972716}
+  m_Layer: 0
+  m_Name: WeaponPivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2070972716
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070972715}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 629779737}
+  m_Father: {fileID: 724539908}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9171100009234638
 GameObject:
