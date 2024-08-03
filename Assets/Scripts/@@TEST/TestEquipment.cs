@@ -6,21 +6,22 @@ using ULT;
 using UnityEngine.Rendering;
 using UnityEditor.Animations;
 using UnityEngine.Profiling;
+using System;
 
 public class TestEquipment : MonoBehaviour
 {
     [SerializeField] UltimatePlayerInput playerInput;
 
 
-    TestWeapon currWeapon;
+    [SerializeField]  TestWeapon currWeapon;
     [SerializeField] Rig handIK;
     [SerializeField] Transform weaponParent;
     [SerializeField] Transform t_rHandGrip;
     [SerializeField] Transform t_lHandGrip;
 
 
-    Animator animator;
-    AnimatorOverrideController animator_override; 
+    public Animator animator;
+    // AnimatorOverrideController animator_override; 
 
 
 
@@ -31,10 +32,6 @@ public class TestEquipment : MonoBehaviour
     void Start()
     {
         playerInput = GetComponent<UltimatePlayerInput>();
-        animator = GetComponent<Animator>();
-        animator_override = animator.runtimeAnimatorController as AnimatorOverrideController;
-
-
         var weapon = GetComponentInChildren<TestWeapon>();
         if (weapon)
         {
@@ -42,8 +39,7 @@ public class TestEquipment : MonoBehaviour
         }
         else
         {
-            handIK.weight= 0f;
-            animator.SetLayerWeight(1,0f);
+            UnArm();
         }
     }
 
@@ -59,6 +55,18 @@ public class TestEquipment : MonoBehaviour
             TestWeapon w= Instantiate(prefab_testPistol).GetComponent<TestWeapon>();
             Equip(w);
         }
+        else if (playerInput.weaponSelect_melee)
+        {
+            UnArm();
+        }
+
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            Debug.Log($"Holster {currWeapon?.gameObject.name}");
+            UnArm();
+        }
+
+        // Debug.Log(handIK.weight);
     }
 
 
@@ -70,18 +78,15 @@ public class TestEquipment : MonoBehaviour
         }
         
         currWeapon = weapon;
-        handIK.weight = 1f;
     
         currWeapon.transform.parent = weaponParent;
         currWeapon.transform.localPosition = Vector3.zero;
         currWeapon.transform.localRotation = Quaternion.identity;
 
 
-        animator.SetLayerWeight(1,1f);
-        animator_override["Anim_Weapon_None"] = currWeapon.waeponAnimation;
+        animator.Play($"Equip_{currWeapon.type}");
 
-
-        Debug.Log($"무기장착 {weapon.gameObject.name}");
+        Debug.Log($"무기장착 {weapon.gameObject.name}_{currWeapon.type}");
     }
 
     void UnEquip()
@@ -91,6 +96,17 @@ public class TestEquipment : MonoBehaviour
             Destroy(currWeapon.gameObject);
         }
     }
+
+    void UnArm()
+    {
+        if (currWeapon)
+        {
+            Destroy(currWeapon.gameObject);
+        }
+
+        animator.Play("Unarmed");        
+    }
+    //===========================================
 
 
     //===============================================================
@@ -106,6 +122,6 @@ public class TestEquipment : MonoBehaviour
         recorder.BindComponentsOfType<Transform>(t_rHandGrip.gameObject,false);
         recorder.BindComponentsOfType<Transform>(t_lHandGrip.gameObject,false);
         recorder.TakeSnapshot(0f);
-        recorder.SaveToClip(currWeapon.waeponAnimation);
+        recorder.SaveToClip(currWeapon.waeponAnimation);        // 현재 장착중인 무기 스크립트에서 무기의 애니메이션 참조를 받아 해당 파일에 저장.
     }
 }

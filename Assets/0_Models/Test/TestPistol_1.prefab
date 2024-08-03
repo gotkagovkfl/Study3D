@@ -115,6 +115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waeponAnimation: {fileID: 7400000, guid: 6a4165274ee93684c99658bcec0f1ee4, type: 2}
+  type: 1
 --- !u!1 &2878675014888813294
 GameObject:
   m_ObjectHideFlags: 0
