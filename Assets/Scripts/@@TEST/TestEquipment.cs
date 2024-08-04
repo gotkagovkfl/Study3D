@@ -14,16 +14,16 @@ public class TestEquipment : MonoBehaviour
 
 
     [SerializeField]  TestWeapon currWeapon;
-    [SerializeField] Rig handIK;
     [SerializeField] Transform weaponParent;
-    [SerializeField] Transform t_rHandGrip;
-    [SerializeField] Transform t_lHandGrip;
+
+    // [SerializeField] Rig handIK;
+    // [SerializeField] Transform t_rHandGrip;
+    // [SerializeField] Transform t_lHandGrip;
 
 
     public Animator animator;
-    // AnimatorOverrideController animator_override; 
-
-
+    bool holster;
+    readonly int hash_holster = Animator.StringToHash("Holster");
 
     [SerializeField] GameObject prefab_testRifle;
     [SerializeField] GameObject prefab_testPistol;
@@ -57,7 +57,7 @@ public class TestEquipment : MonoBehaviour
         }
         else if (playerInput.weaponSelect_melee)
         {
-            UnArm();
+            Holster();  /// ttest
         }
 
         if (Input.GetKeyDown(KeyCode.X))
@@ -76,14 +76,15 @@ public class TestEquipment : MonoBehaviour
         {
             Destroy(currWeapon.gameObject);
         }
-        
+        holster = false;
+
         currWeapon = weapon;
     
         currWeapon.transform.parent = weaponParent;
         currWeapon.transform.localPosition = Vector3.zero;
         currWeapon.transform.localRotation = Quaternion.identity;
 
-
+        animator.SetBool(hash_holster, holster);            // 무기를 장착하면 애니메이션 파라미터도 변경시킴   
         animator.Play($"Equip_{currWeapon.type}");
 
         Debug.Log($"무기장착 {weapon.gameObject.name}_{currWeapon.type}");
@@ -97,13 +98,19 @@ public class TestEquipment : MonoBehaviour
         }
     }
 
+    void Holster()
+    {
+        holster = !holster;
+        animator.SetBool(hash_holster, holster);        
+    }
+
     void UnArm()
     {
         if (currWeapon)
         {
             Destroy(currWeapon.gameObject);
         }
-
+        
         animator.Play("Unarmed");        
     }
     //===========================================
@@ -114,14 +121,14 @@ public class TestEquipment : MonoBehaviour
     /// <summary>
     /// 각 무기별로 파지 위치와 무기의 위치를 기억하기 위함. 
     /// </summary>
-    [ContextMenu("Save Weapon Pos")]
-    void SaveWeaponPos()
-    {
-        GameObjectRecorder recorder = new(gameObject);
-        recorder.BindComponentsOfType<Transform>(weaponParent.gameObject,false);
-        recorder.BindComponentsOfType<Transform>(t_rHandGrip.gameObject,false);
-        recorder.BindComponentsOfType<Transform>(t_lHandGrip.gameObject,false);
-        recorder.TakeSnapshot(0f);
-        recorder.SaveToClip(currWeapon.waeponAnimation);        // 현재 장착중인 무기 스크립트에서 무기의 애니메이션 참조를 받아 해당 파일에 저장.
-    }
+    // [ContextMenu("Save Weapon Pos")]
+    // void SaveWeaponPos()
+    // {
+    //     GameObjectRecorder recorder = new(gameObject);
+    //     recorder.BindComponentsOfType<Transform>(weaponParent.gameObject,false);
+    //     recorder.BindComponentsOfType<Transform>(t_rHandGrip.gameObject,false);
+    //     recorder.BindComponentsOfType<Transform>(t_lHandGrip.gameObject,false);
+    //     recorder.TakeSnapshot(0f);
+    //     recorder.SaveToClip(currWeapon.waeponAnimation);        // 현재 장착중인 무기 스크립트에서 무기의 애니메이션 참조를 받아 해당 파일에 저장.
+    // }
 }

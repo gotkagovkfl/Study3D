@@ -25,47 +25,49 @@ public class AnimationUtil : MonoBehaviour
     void Awake()
     {
         animLen_holsterPistol = holsterAnim_pistol.length;  // equip, holster 는 순서만 반대기 때문에 길이가 같음. 
+
     }
 
+    void Start()
+    {
+
+        GameEvents.onWeaponAnimation.AddListener( onWeaponAnimation );
+    }
+
+
+    //===========================================
+    void onWeaponAnimation(int slot, bool isEquiping)
+    {
+        if (slot == 1)
+        {
+
+        }
+        else if (slot == 2)
+        {
+            StartCoroutine(C_onPistolAnim(isEquiping));
+        }
+        else if (slot == 3)
+        {
+
+        }
+
+
+    }
 
     //================= 권총 ===========================
 
     // ====== Equip
-    public void OnEquip_pistol()
-    {
-        StartCoroutine(C_OnEquip_pistol());
-    }
-
-    IEnumerator C_OnEquip_pistol()
-    {
+    IEnumerator C_onPistolAnim(bool isEquiping)
+    {        
         yield return null;
         handIK.weight = 1f;
         rHandIK.weight = 1f;
-        lHandIK.weight = 0f;
+        lHandIK.weight = isEquiping?0:1;    //시작 ik weight 설정 
         
-
-        DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , 1f, animLen_holsterPistol );    // 왼손은 처음에 파지안함.
-        Debug.Log("[Anim] Equip Pistol");
+    
+        DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , isEquiping?1:0, animLen_holsterPistol );    // 왼손은 처음에 파지안함.
+        Debug.Log("[Anim] Pistol {isEquiping}");
     }
-
-    // ========== Holster
-    public void OnHolster_pistol()
-    {
-        StartCoroutine(C_OnHolster_pistol());
-    }
-
-    IEnumerator C_OnHolster_pistol()
-    {
-        yield return null;
-        handIK.weight = 1f;
-        rHandIK.weight = 1f;
-        lHandIK.weight = 1f;
-
-        DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , 0f, animLen_holsterPistol ); // 마지막엔 조준을 위해 왼손도 파지.
-        Debug.Log("[Anim] Holster Pistol");
-    }
-
-
 
     //==============================================================
 
