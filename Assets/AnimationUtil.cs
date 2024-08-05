@@ -30,31 +30,19 @@ public class AnimationUtil : MonoBehaviour
 
     void Start()
     {
-
-        GameEvents.onWeaponAnimation.AddListener( onWeaponAnimation );
     }
 
 
     //===========================================
-    void onWeaponAnimation(int slot, bool isEquiping)
-    {
-        if (slot == 1)
-        {
-
-        }
-        else if (slot == 2)
-        {
-            StartCoroutine(C_onPistolAnim(isEquiping));
-        }
-        else if (slot == 3)
-        {
-
-        }
-
-
-    }
+    
 
     //================= 권총 ===========================
+
+    public void OnPistolAnim(bool isEquiping)
+    {
+        StartCoroutine(C_onPistolAnim(isEquiping));
+    }
+
 
     // ====== Equip
     IEnumerator C_onPistolAnim(bool isEquiping)

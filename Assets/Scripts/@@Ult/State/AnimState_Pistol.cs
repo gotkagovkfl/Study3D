@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class AnimState_Pistol  : StateMachineBehaviour
 {
+    [SerializeField] AnimationUtil animationUtil;
     [SerializeField] bool isEquiping;
     
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         Debug.Log($"애니메이션 스테이트 엔터! {isEquiping} ");
-        
-        GameEvents.onWeaponAnimation.Invoke(2,isEquiping);
+        if(!animationUtil)
+        {
+            animationUtil = animator.GetComponent<AnimationUtil>();
+        }
+        animationUtil.OnPistolAnim(isEquiping);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

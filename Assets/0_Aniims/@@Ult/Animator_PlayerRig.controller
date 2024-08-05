@@ -358,13 +358,13 @@ AnimatorStateMachine:
     m_Position: {x: 530, y: 150, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5945270386836277720}
-    m_Position: {x: 710, y: 250, z: 0}
+    m_Position: {x: 520, y: 240, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7548324353248181815}
     m_Position: {x: 260, y: 150, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1322413374149510768}
-    m_Position: {x: 410, y: 250, z: 0}
+    m_Position: {x: 260, y: 250, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -387,6 +387,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9b2d5e5d6c751c4fb0791f6874c1ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animationUtil: {fileID: 0}
   isEquiping: 0
 --- !u!1101 &5773133770060529600
 AnimatorStateTransition:
@@ -453,6 +454,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9b2d5e5d6c751c4fb0791f6874c1ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animationUtil: {fileID: 0}
   isEquiping: 1
 --- !u!1101 &7126989746093448032
 AnimatorStateTransition:
