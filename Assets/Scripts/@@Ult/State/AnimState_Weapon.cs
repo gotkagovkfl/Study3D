@@ -2,9 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimState_Pistol  : StateMachineBehaviour
+
+
+
+public class AnimState_Weapon : StateMachineBehaviour
 {
     [SerializeField] AnimationUtil animationUtil;
+    [SerializeField] WeaponType weaponType;
     [SerializeField] bool isEquiping;
     
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -15,7 +19,20 @@ public class AnimState_Pistol  : StateMachineBehaviour
         {
             animationUtil = animator.GetComponent<AnimationUtil>();
         }
-        animationUtil.OnPistolAnim(isEquiping);
+
+        switch (weaponType)
+        {
+            case WeaponType.Rifle:
+                animationUtil.OnRifleAnim(isEquiping);
+                break;
+            case WeaponType.Pistol:
+                
+                animationUtil.OnPistolAnim(isEquiping);
+                break;
+        }
+
+
+        
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

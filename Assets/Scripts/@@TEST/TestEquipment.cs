@@ -80,9 +80,7 @@ public class TestEquipment : MonoBehaviour
 
         currWeapon = weapon;
     
-        currWeapon.transform.parent = weaponParent;
-        currWeapon.transform.localPosition = Vector3.zero;
-        currWeapon.transform.localRotation = Quaternion.identity;
+        currWeapon.transform.SetParent(weaponParent,false);
 
         animator.SetBool(hash_holster, holster);            // 무기를 장착하면 애니메이션 파라미터도 변경시킴   
         animator.Play($"Equip_{currWeapon.type}");

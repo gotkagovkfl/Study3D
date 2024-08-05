@@ -15,22 +15,23 @@ public class AnimationUtil : MonoBehaviour
     [SerializeField] TwoBoneIKConstraint rHandIK;
     [SerializeField] TwoBoneIKConstraint lHandIK;
     
-    //
+    // --------- pistol -------------
     [SerializeField] AnimationClip equipAnim_pistol;
-    [SerializeField] AnimationClip holsterAnim_pistol;
-    float animLen_holsterPistol;
+    float animLen_equipPistol;
+
+    // ---------- rifle ---------------
+    [SerializeField] AnimationClip equipAnim_rifle;
+    float animLen_equipRifle;
 
 
     //============================================
     void Awake()
     {
-        animLen_holsterPistol = holsterAnim_pistol.length;  // equip, holster 는 순서만 반대기 때문에 길이가 같음. 
+        animLen_equipPistol = equipAnim_pistol.length;  // equip, holster 는 순서만 반대기 때문에 길이가 같음. 
+        animLen_equipRifle = equipAnim_rifle.length;
 
     }
 
-    void Start()
-    {
-    }
 
 
     //===========================================
@@ -40,22 +41,41 @@ public class AnimationUtil : MonoBehaviour
 
     public void OnPistolAnim(bool isEquiping)
     {
-        StartCoroutine(C_onPistolAnim(isEquiping));
+        DOTween.Sequence()
+        .AppendInterval(0.01f)
+        .AppendCallback( ()=>        
+            {
+                handIK.weight = 1f;
+                rHandIK.weight = 1f;
+                lHandIK.weight = isEquiping?0:1;    //시작 ik weight 설정 
+             
+                Debug.Log($"[Anim] Pistol {isEquiping}  {animLen_equipPistol}");         
+            }        
+        )
+        .Append( DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , isEquiping?1:0,  animLen_equipPistol )); // 왼손 가중치 설정 
     }
 
 
-    // ====== Equip
-    IEnumerator C_onPistolAnim(bool isEquiping)
-    {        
-        yield return null;
-        handIK.weight = 1f;
-        rHandIK.weight = 1f;
-        lHandIK.weight = isEquiping?0:1;    //시작 ik weight 설정 
-        
+    //================= rifle ===========================
+
+    public void OnRifleAnim(bool isEquiping)
+    {
+        DOTween.Sequence()
+        .AppendInterval(0.01f)
+        .AppendCallback( ()=>        
+            {
+                handIK.weight = 1f;
+                rHandIK.weight = 1f;
+                lHandIK.weight = isEquiping?0:1;    //시작 ik weight 설정 
+            
     
-        DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , isEquiping?1:0, animLen_holsterPistol );    // 왼손은 처음에 파지안함.
-        Debug.Log("[Anim] Pistol {isEquiping}");
+                Debug.Log($"[Anim] Rifle {isEquiping} {animLen_equipRifle}");         
+            }        
+        )
+        .Append( DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , isEquiping?1:0,  animLen_equipRifle  ));// 왼손 가중치 설정 
+        
     }
+
 
     //==============================================================
 
