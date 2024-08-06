@@ -318,7 +318,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Equip_Pistol
+  m_Name: Hold_Pistol
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -346,7 +346,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Equip_Rifle
+  m_Name: Hold_Rifle
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
