@@ -39,6 +39,25 @@ public class AnimationUtil : MonoBehaviour
 
     //================= 권총 ===========================
 
+    public void OnHoldStart(WeaponSlot weaponSlot)
+    {
+        DOTween.Sequence()
+        .AppendInterval(0.01f)
+        .AppendCallback( ()=>        
+            {
+                handIK.weight = 0f; //처음에 hand IK를 꺼놓고, 다음 스테이트에서 켜짐.
+                // 그리고 Multi parent Constraint 조절해야함. 
+
+
+                
+             
+                // Debug.Log($"[Anim] Set Hold Start {isEquiping} {animLen_equipPistol}");         
+            }        
+        );
+        // .Append( DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , isEquiping?1:0,  animLen_equipPistol )); // 왼손 가중치 설정 
+    }
+
+
     public void OnPistolAnim(bool isEquiping)
     {
         DOTween.Sequence()

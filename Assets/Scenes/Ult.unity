@@ -1307,7 +1307,7 @@ Transform:
   m_GameObject: {fileID: 872474348}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.1644943, y: 3.7352066, z: -3.6}
+  m_LocalPosition: {x: 1.165417, y: 3.7352066, z: -3.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2636,6 +2636,7 @@ MonoBehaviour:
   playerInput: {fileID: 0}
   weaponSlot_primary: {fileID: 217224160}
   weaponSlot_secondary: {fileID: 1062038888}
+  holdingSlot: 0
   holdingWeapon: {fileID: 0}
   animator: {fileID: 515563711}
   prefab_testRifle: {fileID: 3157565929852043342, guid: ebbd26949ff99be4881e889943f59abb, type: 3}
@@ -3011,7 +3012,7 @@ Transform:
   m_GameObject: {fileID: 1593782028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.1644943, y: 3.7352066, z: -3.6}
+  m_LocalPosition: {x: 1.165417, y: 3.7352066, z: -3.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
