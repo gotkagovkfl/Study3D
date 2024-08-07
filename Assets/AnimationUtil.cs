@@ -28,7 +28,7 @@ public class AnimationUtil : MonoBehaviour
     // --------- pistol -------------
     [SerializeField] AnimationClip holdAnim_pistol;
     float animLen_hold_pistol;
-    float len_holdStart_pistol;
+    float len_holdStart_pistol = 0.1f;
 
 
 
@@ -44,6 +44,8 @@ public class AnimationUtil : MonoBehaviour
             MultiParentConstraint mpc = kv.Value?.GetComponent<MultiParentConstraint>();     // 항상 붙어 있을거임. 
             
             mpcs.Add(weaponType,mpc);
+
+            SetMPC(weaponType,false);   // 초기 설정
         }
         
 
@@ -59,48 +61,6 @@ public class AnimationUtil : MonoBehaviour
 
 
     //===========================================
-    
-
-    //================= 권총 ===========================
-
-    public void OnPistolAnim(bool isEquiping)
-    {
-        DOTween.Sequence()
-        .AppendInterval(0.01f)
-        .AppendCallback( ()=>        
-            {
-                handIK.weight = 1f;
-                rHandIK.weight = 1f;
-                lHandIK.weight = isEquiping?0:1;    //시작 ik weight 설정 
-             
-                Debug.Log($"[Anim] Pistol {isEquiping}  {animLen_hold_pistol}");         
-            }        
-        )
-        .Append( DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , isEquiping?1:0,  animLen_hold_pistol )); // 왼손 가중치 설정 
-    }
-
-
-    //================= rifle ===========================
-
-    public void OnRifleAnim(bool isEquiping)
-    {
-        DOTween.Sequence()
-        .AppendInterval(0.01f)
-        .AppendCallback( ()=>        
-            {
-                handIK.weight = 1f;
-                rHandIK.weight = 1f;
-                lHandIK.weight = isEquiping?0:1;    //시작 ik weight 설정 
-            
-    
-                Debug.Log($"[Anim] Rifle {isEquiping} {animLen_hold_rifle}");         
-            }        
-        )
-        .Append( DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , isEquiping?1:0,  animLen_hold_rifle  ));// 왼손 가중치 설정 
-        
-    }
-
-
 
 
     /// <summary>
@@ -126,14 +86,16 @@ public class AnimationUtil : MonoBehaviour
             
         }
         
-        // 우선 MPC 설정
-        SetMPC(weaponType, true);
+        
+        
 
         // 시퀀스 재생
         DOTween.Sequence()
         .AppendInterval(0.01f)
         .AppendCallback( ()=>        
             {
+                SetMPC(weaponType, true);// 우선 MPC 설정       // 여기에 딜레이 안주면 또 값이 안바뀌더라. 근데 신기하게 awake이런데에서는 작동됨..
+                
                 handIK.weight = 1f;
                 lHandIK.weight = 0f;  
                 rHandIK.weight = 0f;
@@ -197,16 +159,13 @@ public class AnimationUtil : MonoBehaviour
     /// <param name="isHold"></param>
     void SetMPC(WeaponType weaponType, bool isHold)
     {    
-        // 홀딩 슬롯의 0번인덱스 값은 1, 나머지 0 
-        // 나머지 슬롯 0번 인덱스 0, 나머지 1
-
         //multi parent constraint ( mpc ) 설정 - idx 0 : weapon pivot, idx 1 : weapon slot
         foreach(var kv in mpcs)
         {
             WeaponType wt = kv.Key;
-            MultiParentConstraintData mpcData = kv.Value.data; 
+            MultiParentConstraint mpc = kv.Value; 
              
-            var sourceObjects = mpcData.sourceObjects;
+            var sourceObjects = mpc.data.sourceObjects;
 
             if (weaponType == wt)
             {
@@ -218,7 +177,7 @@ public class AnimationUtil : MonoBehaviour
                 sourceObjects.SetWeight(0, 0f);
                 sourceObjects.SetWeight(1, 1f);
             }
-            mpcData.sourceObjects = sourceObjects; //이건 왜 필요한지 모르겠네.
+            mpc.data.sourceObjects = sourceObjects; //data가 구조체라 값을 바꾸면 다시 할당해야함. 
         }
     }
 

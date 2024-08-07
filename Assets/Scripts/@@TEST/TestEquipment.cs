@@ -120,17 +120,17 @@ public class TestEquipment : MonoBehaviour
     /// <param name="weaponSlot"></param>
     void Hold(WeaponSlot weaponSlot)
     {
+        
+        
         TestWeapon weapon = equippedWeapon[weaponSlot];
         holdingWeapon = weapon;
         holdingSlot = weaponSlot;
 
-        holding = true;
-        animator.SetBool(hash_holding, holding);            // 무기를 장착하면 애니메이션 파라미터도 변경시킴   
-        
-        animator.Play($"Hold_{holdingWeapon.type}");
-
         Debug.Log($"무기장착 {weapon.gameObject.name}_{holdingWeapon.type}");
 
+        holding = true;
+        animator.SetBool(hash_holding, holding);            // 무기를 장착하면 애니메이션 파라미터도 변경시킴   
+        animator.Play($"Hold_{holdingWeapon.type}");
     }
 
 
