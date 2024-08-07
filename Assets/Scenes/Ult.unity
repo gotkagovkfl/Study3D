@@ -462,7 +462,7 @@ GameObject:
   - component: {fileID: 217224160}
   - component: {fileID: 217224161}
   m_Layer: 0
-  m_Name: Weapon_Primary
+  m_Name: WeaponSlot_Rifle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -741,8 +741,8 @@ MonoBehaviour:
   handIK: {fileID: 1716946876}
   rHandIK: {fileID: 209620969}
   lHandIK: {fileID: 939246235}
-  equipAnim_pistol: {fileID: 7400000, guid: 469d7d0514b0bca42bda673934b2641a, type: 2}
-  equipAnim_rifle: {fileID: 7400000, guid: ba8aaa5636871b34e9d4786092a434a6, type: 2}
+  holdAnim_rifle: {fileID: 7400000, guid: ba8aaa5636871b34e9d4786092a434a6, type: 2}
+  holdAnim_pistol: {fileID: 7400000, guid: 469d7d0514b0bca42bda673934b2641a, type: 2}
 --- !u!1 &549487198
 GameObject:
   m_ObjectHideFlags: 0
@@ -1307,7 +1307,7 @@ Transform:
   m_GameObject: {fileID: 872474348}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.165417, y: 3.7352066, z: -3.6}
+  m_LocalPosition: {x: 1.1641176, y: 3.7352066, z: -3.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1780,7 +1780,7 @@ GameObject:
   - component: {fileID: 1062038888}
   - component: {fileID: 1062038889}
   m_Layer: 0
-  m_Name: Weapon_Secondary
+  m_Name: WeaponSlot_Pistol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2354,6 +2354,7 @@ GameObject:
   - component: {fileID: 1288686531}
   - component: {fileID: 1288686533}
   - component: {fileID: 1288686532}
+  - component: {fileID: 1288686534}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2634,8 +2635,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInput: {fileID: 0}
-  weaponSlot_primary: {fileID: 217224160}
-  weaponSlot_secondary: {fileID: 1062038888}
+  equipmentSlot: {fileID: 0}
   holdingSlot: 0
   holdingWeapon: {fileID: 0}
   animator: {fileID: 515563711}
@@ -2653,6 +2653,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbc3c33f9017b4349809e5efea2c0ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1288686534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288686519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4845fa5bdd9da7643a5c2b265a3fda31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponSlot_rifle: {fileID: 217224160}
+  weaponSlot_pistol: {fileID: 1062038888}
 --- !u!1 &1296365554
 GameObject:
   m_ObjectHideFlags: 0
@@ -3012,7 +3026,7 @@ Transform:
   m_GameObject: {fileID: 1593782028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.165417, y: 3.7352066, z: -3.6}
+  m_LocalPosition: {x: 1.1641176, y: 3.7352066, z: -3.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

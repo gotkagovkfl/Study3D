@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using DG.Tweening;
 
 
 
@@ -9,29 +10,34 @@ public class AnimState_Weapon : StateMachineBehaviour
 {
     [SerializeField] AnimationUtil animationUtil;
     [SerializeField] WeaponType weaponType;
-    [SerializeField] bool isEquiping;
+    // [SerializeField] bool isHolster;
     
+
+    int hash_holding = Animator.StringToHash("Holding");
+
+    //============================================================================
+
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        Debug.Log($"애니메이션 스테이트 엔터! {isEquiping} ");
+    {        
         if(!animationUtil)
         {
             animationUtil = animator.GetComponent<AnimationUtil>();
         }
 
-        switch (weaponType)
+
+        // 
+        if ( animator.GetBool(hash_holding) )
         {
-            case WeaponType.Rifle:
-                animationUtil.OnRifleAnim(isEquiping);
-                break;
-            case WeaponType.Pistol:
-                
-                animationUtil.OnPistolAnim(isEquiping);
-                break;
+            Debug.Log($"홀드 애니메이션 스테이트 {weaponType}  ");
+            animationUtil.OnHold(weaponType);
+            
         }
-
-
+        else
+        {
+            Debug.Log($"홀스터 애니메이션 스테이트 {weaponType}  ");
+            animationUtil.OnHolster(weaponType);
+        }        
         
     }
 
@@ -58,4 +64,5 @@ public class AnimState_Weapon : StateMachineBehaviour
     //{
     //    // Implement code that sets up animation IK (inverse kinematics)
     //}
+
 }

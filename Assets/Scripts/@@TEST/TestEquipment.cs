@@ -3,6 +3,8 @@ using ULT;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
 using UnityEngine.Animations.Rigging;
+using DG.Tweening;
+using Study3D;
 
 
 public enum WeaponSlot
@@ -18,39 +20,30 @@ public enum WeaponSlot
 public class TestEquipment : MonoBehaviour
 {
     [SerializeField] UltimatePlayerInput playerInput;
+    [SerializeField] EquipmentSlot equipmentSlot;
 
-
-    [SerializeField] Transform weaponSlot_primary;
-    [SerializeField] Transform weaponSlot_secondary;
-    
     //
-    Dictionary<WeaponSlot, Transform> weaponSlots;      // 무기를 장착할 위치
     Dictionary<WeaponSlot,TestWeapon> equippedWeapon = new(){ {WeaponSlot.Primary, null}, {WeaponSlot.Secondary, null}, {WeaponSlot.Melee, null} };
     [SerializeField]  WeaponSlot holdingSlot;
     [SerializeField]  TestWeapon holdingWeapon;
 
 
-    // [SerializeField] Rig handIK;
-    // [SerializeField] Transform t_rHandGrip;
-    // [SerializeField] Transform t_lHandGrip;
-
-
     public Animator animator;
-    bool holster;
-    readonly int hash_holster = Animator.StringToHash("Holster");
+    bool holding;
+    readonly int hash_holding = Animator.StringToHash("Holding");
 
     [SerializeField] GameObject prefab_testRifle;
     [SerializeField] GameObject prefab_testPistol;
 
 
+
     //======================================================================================================================
+
     void Start()
     {
         playerInput = GetComponent<UltimatePlayerInput>();
+        equipmentSlot = GetComponent<EquipmentSlot>();
     
-        // 변수는
-        weaponSlots = new(){ {WeaponSlot.Primary, weaponSlot_primary}, {WeaponSlot.Secondary, weaponSlot_secondary}, {WeaponSlot.Melee, null} };
-
 
         // ------- 기본 무기 장착 ------------
         TestWeapon w1= Instantiate(prefab_testRifle).GetComponent<TestWeapon>();
@@ -103,7 +96,7 @@ public class TestEquipment : MonoBehaviour
 
         // 새 무기 장착
         equippedWeapon[weaponSlot] = weapon;
-        Transform t_weaponSlot = weaponSlots[weaponSlot];
+        Transform t_weaponSlot = equipmentSlot.weaponSlots[weapon.type];
         weapon.transform.SetParent(t_weaponSlot,false);
     }
 
@@ -131,46 +124,14 @@ public class TestEquipment : MonoBehaviour
         holdingWeapon = weapon;
         holdingSlot = weaponSlot;
 
-        holster = false;
-
-        animator.SetBool(hash_holster, holster);            // 무기를 장착하면 애니메이션 파라미터도 변경시킴   
+        holding = true;
+        animator.SetBool(hash_holding, holding);            // 무기를 장착하면 애니메이션 파라미터도 변경시킴   
+        
         animator.Play($"Hold_{holdingWeapon.type}");
-        // 여기서 mpc 조절하자. 안그럼 더러워진다. 
-        OnHold();
 
         Debug.Log($"무기장착 {weapon.gameObject.name}_{holdingWeapon.type}");
 
     }
-
-
-    void OnHold()
-    {
-        // 홀딩 슬롯의 0번인덱스 값은 1, 나머지 0 
-        // 나머지 슬롯 0번 인덱스 0, 나머지 1
-
-        //multi parent constraint ( mpc ) 설정 - idx 0 : weapon pivot, idx 1 : weapon slot
-        foreach(var kv in weaponSlots)
-        {
-            WeaponSlot weaponSlot = kv.Key;
-            MultiParentConstraint mpc = kv.Value?.GetComponent<MultiParentConstraint>();     // 항상 붙어 있을거임. 
-
-            if (mpc)
-            {
-                var sourceObjects = mpc.data.sourceObjects;
-
-                bool isMatch = weaponSlot == holdingSlot;      // 해당 mpc중에서 일치하는 것 찾아내기위함. 
-                
-                // 사용할 무기는 0번(웨폰 피봇) 이 1로 되게, 
-                sourceObjects.SetWeight(0, isMatch? 1f : 0f);
-                sourceObjects.SetWeight(1, isMatch? 0f : 1f);
-
-                mpc.data.sourceObjects = sourceObjects; //이건 왜 필요한지 모르겠네.
-            }
-            
-
-        }
-    }
-
 
 
     /// <summary>
@@ -178,8 +139,8 @@ public class TestEquipment : MonoBehaviour
     /// </summary>
     void Holster()
     {
-        holster = !holster;
-        animator.SetBool(hash_holster, holster);        
+        holding = !holding;
+        animator.SetBool(hash_holding, holding);        
     }
 
     /// <summary>
@@ -189,19 +150,6 @@ public class TestEquipment : MonoBehaviour
     {
         animator.Play("Unarmed");        
     }
-    //===========================================
-
-
-
-
-
-
-
-
-
-
-
-
 
     //===============================================================
 

@@ -5,7 +5,7 @@ using Study3D;
 
 public class ItemObject_04_TestSupportWeapon : Weapon
 {
-    public override string itemId =>  $"{(int)ItemType.Equipment}{(int)EquipmentSlot.SupportWeapon}";
+    public override string itemId =>  $"{(int)ItemType.Equipment}{(int)Study3D.EquipmentSlot.SupportWeapon}";
 
     
     // Start is called before the first frame update

@@ -10,25 +10,49 @@ using DG.Tweening;
 /// </summary>
 public class AnimationUtil : MonoBehaviour
 {
+    EquipmentSlot equipmentSlot;
     
+    Dictionary<WeaponType, MultiParentConstraint> mpcs;
+    
+
     [SerializeField] Rig handIK;
     [SerializeField] TwoBoneIKConstraint rHandIK;
     [SerializeField] TwoBoneIKConstraint lHandIK;
+
+    
+    // ---------- rifle ---------------
+    [SerializeField] AnimationClip holdAnim_rifle;
+    float animLen_hold_rifle;
+    float len_holdStart_rifle = 0.25f;  // 
     
     // --------- pistol -------------
-    [SerializeField] AnimationClip equipAnim_pistol;
-    float animLen_equipPistol;
+    [SerializeField] AnimationClip holdAnim_pistol;
+    float animLen_hold_pistol;
+    float len_holdStart_pistol;
 
-    // ---------- rifle ---------------
-    [SerializeField] AnimationClip equipAnim_rifle;
-    float animLen_equipRifle;
 
 
     //============================================
     void Awake()
     {
-        animLen_equipPistol = equipAnim_pistol.length;  // equip, holster 는 순서만 반대기 때문에 길이가 같음. 
-        animLen_equipRifle = equipAnim_rifle.length;
+        //
+        equipmentSlot = GetComponentInParent<EquipmentSlot>();
+        mpcs= new();
+        foreach(var kv in equipmentSlot.weaponSlots)
+        {
+            WeaponType weaponType = kv.Key;
+            MultiParentConstraint mpc = kv.Value?.GetComponent<MultiParentConstraint>();     // 항상 붙어 있을거임. 
+            
+            mpcs.Add(weaponType,mpc);
+        }
+        
+
+        //
+        animLen_hold_pistol = holdAnim_pistol.length;  // equip, holster 는 순서만 반대기 때문에 길이가 같음. 
+        animLen_hold_rifle = holdAnim_rifle.length;
+
+        
+        //------------------------------
 
     }
 
@@ -38,25 +62,6 @@ public class AnimationUtil : MonoBehaviour
     
 
     //================= 권총 ===========================
-
-    public void OnHoldStart(WeaponSlot weaponSlot)
-    {
-        DOTween.Sequence()
-        .AppendInterval(0.01f)
-        .AppendCallback( ()=>        
-            {
-                handIK.weight = 0f; //처음에 hand IK를 꺼놓고, 다음 스테이트에서 켜짐.
-                // 그리고 Multi parent Constraint 조절해야함. 
-
-
-                
-             
-                // Debug.Log($"[Anim] Set Hold Start {isEquiping} {animLen_equipPistol}");         
-            }        
-        );
-        // .Append( DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , isEquiping?1:0,  animLen_equipPistol )); // 왼손 가중치 설정 
-    }
-
 
     public void OnPistolAnim(bool isEquiping)
     {
@@ -68,10 +73,10 @@ public class AnimationUtil : MonoBehaviour
                 rHandIK.weight = 1f;
                 lHandIK.weight = isEquiping?0:1;    //시작 ik weight 설정 
              
-                Debug.Log($"[Anim] Pistol {isEquiping}  {animLen_equipPistol}");         
+                Debug.Log($"[Anim] Pistol {isEquiping}  {animLen_hold_pistol}");         
             }        
         )
-        .Append( DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , isEquiping?1:0,  animLen_equipPistol )); // 왼손 가중치 설정 
+        .Append( DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , isEquiping?1:0,  animLen_hold_pistol )); // 왼손 가중치 설정 
     }
 
 
@@ -88,12 +93,136 @@ public class AnimationUtil : MonoBehaviour
                 lHandIK.weight = isEquiping?0:1;    //시작 ik weight 설정 
             
     
-                Debug.Log($"[Anim] Rifle {isEquiping} {animLen_equipRifle}");         
+                Debug.Log($"[Anim] Rifle {isEquiping} {animLen_hold_rifle}");         
             }        
         )
-        .Append( DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , isEquiping?1:0,  animLen_equipRifle  ));// 왼손 가중치 설정 
+        .Append( DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , isEquiping?1:0,  animLen_hold_rifle  ));// 왼손 가중치 설정 
         
     }
+
+
+
+
+    /// <summary>
+    /// "hold" - 해당 무기 타입에 따라 다른 설정.
+    /// </summary>
+    /// <param name="weaponType"></param>
+    public void OnHold(WeaponType weaponType)
+    {
+        // 세팅
+        float duration = 0f;
+        float offset = 0f;
+        switch (weaponType)
+        {
+            case WeaponType.Rifle:
+                duration = animLen_hold_rifle;
+                offset = len_holdStart_rifle;
+                break;
+
+            case WeaponType.Pistol:
+                duration = animLen_hold_pistol;
+                offset = len_holdStart_pistol;
+                break;
+            
+        }
+        
+        // 우선 MPC 설정
+        SetMPC(weaponType, true);
+
+        // 시퀀스 재생
+        DOTween.Sequence()
+        .AppendInterval(0.01f)
+        .AppendCallback( ()=>        
+            {
+                handIK.weight = 1f;
+                lHandIK.weight = 0f;  
+                rHandIK.weight = 0f;
+            }        
+        )
+                .Append( DOTween.To(()=>rHandIK.weight, x=> rHandIK.weight = x , 1f,  offset)) // 총을 잡는 손  우선 설정 
+        .Append( DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , 1f,  duration - offset )) // 보조하는 손 다음으로 설정 
+        .Play();
+       
+    }
+
+    /// <summary>
+    /// "Holster" - hold의 역순. 보조손 -> 주손 -> 무기 
+    /// </summary>
+    /// <param name="weaponType"></param>
+    public void OnHolster(WeaponType weaponType)
+    {  
+        // 세팅 
+        float duration = 0f;
+        float offset = 0f;
+        switch (weaponType)
+        {
+            case WeaponType.Rifle:
+                duration = animLen_hold_rifle;
+                offset = len_holdStart_rifle;
+                break;
+
+            case WeaponType.Pistol:
+                duration = animLen_hold_pistol;
+                offset = len_holdStart_pistol;
+                break;
+            
+        }
+
+         // 시퀀스 재생
+        DOTween.Sequence()
+        .AppendInterval(0.01f)
+        .AppendCallback( ()=>        
+            {
+                handIK.weight = 1f;
+                lHandIK.weight = 1f;  
+                rHandIK.weight = 1f;
+            }        
+        )
+        .Append( DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , 0f,  duration - offset )) // 보조하는 손 우선 설정 
+        .Append( DOTween.To(()=>rHandIK.weight, x=> rHandIK.weight = x , 0f,  offset)) // 총을 잡는 손 다음으로 설정 
+        .AppendCallback(()=>SetMPC(weaponType, false))
+        .Play();
+        
+
+        
+
+    }
+
+
+
+    /// <summary>
+    /// Multi parent Constraint 를 설정한다. - idx 0 : weapon pivot, idx 1 : equipment slot
+    /// </summary>
+    /// <param name="weaponType"></param>
+    /// <param name="isHold"></param>
+    void SetMPC(WeaponType weaponType, bool isHold)
+    {    
+        // 홀딩 슬롯의 0번인덱스 값은 1, 나머지 0 
+        // 나머지 슬롯 0번 인덱스 0, 나머지 1
+
+        //multi parent constraint ( mpc ) 설정 - idx 0 : weapon pivot, idx 1 : weapon slot
+        foreach(var kv in mpcs)
+        {
+            WeaponType wt = kv.Key;
+            MultiParentConstraintData mpcData = kv.Value.data; 
+             
+            var sourceObjects = mpcData.sourceObjects;
+
+            if (weaponType == wt)
+            {
+                sourceObjects.SetWeight(0, isHold? 1f:0f);
+                sourceObjects.SetWeight(1, isHold? 0f:1f);
+            }  
+            else if (isHold)    // 홀드애니메이션이 아닌경우, 해당 무기가 아니라면 건들지 않음. - 무장해제를 할 떄는 모든 0번 인덱스가 0이어야함. 
+            {
+                sourceObjects.SetWeight(0, 0f);
+                sourceObjects.SetWeight(1, 1f);
+            }
+            mpcData.sourceObjects = sourceObjects; //이건 왜 필요한지 모르겠네.
+        }
+    }
+
+
 
 
     //==============================================================
