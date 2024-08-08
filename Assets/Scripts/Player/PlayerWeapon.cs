@@ -32,16 +32,9 @@ public class PlayerWeapon : MonoBehaviour
         
         yield return null;  // 다른 리소스 우선 초기화 되어야함. 
         
-
         InitCurrWeapons();                  // 시작시 보유중인 무기 초기화.
         HoldWeapon(EquipmentSlot.MainWeapon);    // 시작시 주무기 휴대
         Debug.Log(currWeaponSlot);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     //=======================================================================

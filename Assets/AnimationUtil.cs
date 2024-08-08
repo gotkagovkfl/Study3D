@@ -30,12 +30,13 @@ public class AnimationUtil : MonoBehaviour
     float animLen_hold_pistol;
     float len_holdStart_pistol = 0.1f;
 
-
+    //-----------------------------
+    Sequence playingSeq;
 
     //============================================
-    void Awake()
+
+    void Start()
     {
-        //
         equipmentSlot = GetComponentInParent<EquipmentSlot>();
         mpcs= new();
         foreach(var kv in equipmentSlot.weaponSlots)
@@ -52,10 +53,6 @@ public class AnimationUtil : MonoBehaviour
         //
         animLen_hold_pistol = holdAnim_pistol.length;  // equip, holster 는 순서만 반대기 때문에 길이가 같음. 
         animLen_hold_rifle = holdAnim_rifle.length;
-
-        
-        //------------------------------
-
     }
 
 
@@ -87,10 +84,19 @@ public class AnimationUtil : MonoBehaviour
         }
         
         
-        
-
         // 시퀀스 재생
-        DOTween.Sequence()
+        if (playingSeq!=null && playingSeq.IsPlaying())
+        {
+            playingSeq.Kill();
+        }
+
+        playingSeq = DOTween.Sequence()
+        .OnKill(()=>
+        {                
+            handIK.weight = 1f;
+            lHandIK.weight = 1f;  
+            rHandIK.weight = 1f;
+        })
         .AppendInterval(0.01f)
         .AppendCallback( ()=>        
             {
@@ -101,7 +107,7 @@ public class AnimationUtil : MonoBehaviour
                 rHandIK.weight = 0f;
             }        
         )
-                .Append( DOTween.To(()=>rHandIK.weight, x=> rHandIK.weight = x , 1f,  offset)) // 총을 잡는 손  우선 설정 
+        .Append( DOTween.To(()=>rHandIK.weight, x=> rHandIK.weight = x , 1f,  offset)) // 총을 잡는 손  우선 설정 
         .Append( DOTween.To(()=>lHandIK.weight, x=> lHandIK.weight = x , 1f,  duration - offset )) // 보조하는 손 다음으로 설정 
         .Play();
        
@@ -130,8 +136,20 @@ public class AnimationUtil : MonoBehaviour
             
         }
 
+        //
+        if (playingSeq!=null && playingSeq.IsPlaying())
+        {
+            playingSeq.Kill();
+        }
          // 시퀀스 재생
-        DOTween.Sequence()
+        playingSeq = DOTween.Sequence()
+        .OnKill(()=>
+        {                
+            handIK.weight = 1f;
+            lHandIK.weight = 0f;  
+            rHandIK.weight = 0f;
+            SetMPC(weaponType, false);
+        })
         .AppendInterval(0.01f)
         .AppendCallback( ()=>        
             {

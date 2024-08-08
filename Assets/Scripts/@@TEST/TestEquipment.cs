@@ -1,14 +1,15 @@
+
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using ULT;
-using System.Collections.Generic;
-using UnityEngine.Rendering;
-using UnityEngine.Animations.Rigging;
-using DG.Tweening;
-using Study3D;
+using System;
 
+using DG.Tweening;
 
 public enum WeaponSlot
 {
+    UnArmed,
     Primary,
     Secondary,
     Melee,
@@ -36,6 +37,9 @@ public class TestEquipment : MonoBehaviour
     [SerializeField] GameObject prefab_testPistol;
 
 
+    Coroutine playingWork; // 중복된 작업이 아니라 마지막에 지정된 작업만 하기위함.
+
+
 
     //======================================================================================================================
 
@@ -54,28 +58,26 @@ public class TestEquipment : MonoBehaviour
 
     
         // 처음엔 무장 X - 나중엔 
-        Hold(WeaponSlot.Primary);
+        // Hold(WeaponSlot.Primary);
+
+        StartCoroutine(SwitchWeapon(WeaponSlot.Primary));
     }
 
     void Update()
     {
         if (playerInput.weaponSelect_main)
         {
-            Hold(WeaponSlot.Primary);
+            StartWork(SwitchWeapon(WeaponSlot.Primary));
         }
         else if (playerInput.weaponSelect_secondary)
         {
-            Hold(WeaponSlot.Secondary);
-        }
-        else if (playerInput.weaponSelect_melee)
-        {
-            Holster();  /// ttest
+            StartWork(SwitchWeapon(WeaponSlot.Secondary));
         }
 
-        if (Input.GetKeyDown(KeyCode.X))
+        // 
+        else if (Input.GetKeyDown(KeyCode.X))
         {
-            Debug.Log($"Holster {holdingWeapon?.gameObject.name}");
-            UnArm();
+            StartWork(ToggleHolding());
         }
 
         // Debug.Log(handIK.weight);
@@ -83,6 +85,9 @@ public class TestEquipment : MonoBehaviour
 
 
     //=======================================================================================
+
+
+    //----------------------------
 
     /// <summary>
     /// weaponSlot 에 weapon을 장착한다. 
@@ -113,6 +118,66 @@ public class TestEquipment : MonoBehaviour
         }
     }
 
+    //========================================== ==================================================
+    // 무기 
+    //==========================================
+
+        /// <summary>
+    /// 코루틴을 실행하되, 동시에 하나의 작업을 할 수 있도록 하기. - 진행중이던 작업은 즉시 멈춘다. 
+    /// </summary>
+    /// <param name="work"></param>
+    void StartWork(IEnumerator work)
+    {
+        if (playingWork!=null)
+            StopCoroutine(playingWork);
+        
+        playingWork = StartCoroutine(work);
+    }
+
+    //--------------------
+
+    IEnumerator SwitchWeapon(WeaponSlot weaponSlot) 
+    {
+        if(holdingSlot == weaponSlot && holding)
+        {
+            Debug.Log("이미 들고있는 무기");
+            yield break;
+        }
+
+        //들고있는 무기 holster
+        // yield return StartCoroutine(HolsterWeaponC());
+        yield return StartCoroutine(HolsterWeaponC());
+        
+        // 후에, 해당 슬롯 hold
+        Hold(weaponSlot);
+    }
+
+    IEnumerator HolsterWeaponC()
+    {
+        if (holdingWeapon)
+        {
+            SetHolding(false);  
+            // 홀스터 애니메이션을 기다린다. 
+            do
+            {
+                yield return new WaitForEndOfFrame();
+            }
+            while( animator.GetCurrentAnimatorStateInfo(0).normalizedTime <1f);     // 스테이트 전환 시간이 설정되어있는 경우 잘 작동하지 않음. 
+            
+        }
+    }
+
+    IEnumerator ToggleHolding()
+    {
+        while( animator.GetCurrentAnimatorStateInfo(0).normalizedTime <1f)
+        {
+            yield return new WaitForEndOfFrame();
+        }; 
+        SetHolding(!holding);
+    }
+
+    
+    //--------------------------------
 
     /// <summary>
     /// 해당 무기를 파지한다. 
@@ -120,35 +185,25 @@ public class TestEquipment : MonoBehaviour
     /// <param name="weaponSlot"></param>
     void Hold(WeaponSlot weaponSlot)
     {
-        
-        
+          
         TestWeapon weapon = equippedWeapon[weaponSlot];
         holdingWeapon = weapon;
         holdingSlot = weaponSlot;
 
         Debug.Log($"무기장착 {weapon.gameObject.name}_{holdingWeapon.type}");
 
-        holding = true;
-        animator.SetBool(hash_holding, holding);            // 무기를 장착하면 애니메이션 파라미터도 변경시킴   
+        SetHolding(true);
         animator.Play($"Hold_{holdingWeapon.type}");
     }
 
 
     /// <summary>
-    ///  해당 무기를 보관한다.
+    ///  파지 상태를 지정한다. 
     /// </summary>
-    void Holster()
+    void SetHolding(bool flag)
     {
-        holding = !holding;
+        holding = flag;
         animator.SetBool(hash_holding, holding);        
-    }
-
-    /// <summary>
-    /// 무장 해제한다. 
-    /// </summary>
-    void UnArm()
-    {
-        animator.Play("Unarmed");        
     }
 
     //===============================================================
